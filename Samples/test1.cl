@@ -1,20 +1,20 @@
 import Hero
-import Hero2
+import Heroo
 
 class Hi {
    int myVar
-   bool myVar2
+   bool myVar
 
    def void hi() {
-       myVar2 = false
+       myVar = false
    }
 }
 
 class Hi {
    int myVar
-   bool myVar2
+   bool myVar
 
    def void hi() {
-       myVar2 = false
+       myVar = false
    }
 }
