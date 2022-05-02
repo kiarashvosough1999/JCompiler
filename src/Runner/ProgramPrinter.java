@@ -60,7 +60,9 @@ public class ProgramPrinter implements JythonListener {
      */
     @Override
     public void exitImportclass(JythonParser.ImportclassContext ctx) {
-
+        try {
+            this.indentationStack.pop(IndentationType.importt);
+        } catch (IndentationStackException ignored) { }
     }
 
     /**
@@ -70,7 +72,27 @@ public class ProgramPrinter implements JythonListener {
      */
     @Override
     public void enterClassDef(JythonParser.ClassDefContext ctx) {
+        try {
+            this.indentationStack.push(IndentationType.classs);
+        } catch (IndentationStackException ignored) {}
 
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(this.indentationStack.getIndentation());
+        stringBuilder.append("class: ");
+        stringBuilder.append(ctx.className.getText());
+
+        if (ctx.classParentName != null) {
+            stringBuilder.append("/ ");
+            stringBuilder.append("class parents: ");
+            stringBuilder.append(ctx.classParentName.getText());
+            stringBuilder.append(", ");
+            if (ctx.otherClassParentName != null) {
+                stringBuilder.append(ctx.otherClassParentName.getText());
+                stringBuilder.append(", ");
+            }
+        }
+        stringBuilder.append("{");
+        System.out.println(stringBuilder);
     }
 
     /**
@@ -80,7 +102,13 @@ public class ProgramPrinter implements JythonListener {
      */
     @Override
     public void exitClassDef(JythonParser.ClassDefContext ctx) {
-
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(this.indentationStack.getIndentation());
+        stringBuilder.append("}");
+        System.out.println(stringBuilder);
+        try {
+            this.indentationStack.pop(IndentationType.classs);
+        } catch (IndentationStackException ignored) {}
     }
 
     /**
@@ -110,7 +138,17 @@ public class ProgramPrinter implements JythonListener {
      */
     @Override
     public void enterVarDec(JythonParser.VarDecContext ctx) {
+        try {
+            this.indentationStack.push(IndentationType.variable);
+        } catch (IndentationStackException ignored) {}
 
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(this.indentationStack.getIndentation());
+        stringBuilder.append("filed: ");
+        stringBuilder.append(ctx.varibaleName.getText());
+        stringBuilder.append("/ type= ");
+        stringBuilder.append(ctx.variableType.getText());
+        System.out.println(stringBuilder);
     }
 
     /**
@@ -120,7 +158,9 @@ public class ProgramPrinter implements JythonListener {
      */
     @Override
     public void exitVarDec(JythonParser.VarDecContext ctx) {
-
+        try {
+            this.indentationStack.pop(IndentationType.variable);
+        } catch (IndentationStackException ignored) {}
     }
 
     /**

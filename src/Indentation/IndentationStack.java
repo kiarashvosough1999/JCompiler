@@ -19,7 +19,7 @@ public class IndentationStack {
     }
 
     public void pop(IndentationType type) throws IndentationStackException {
-        if (this.indentablesStack.peek().getIndentationType() == type) {
+        if (this.indentablesStack.peek().getIndentationType() != type) {
             throw new IndentationStackException(type, this.indentablesStack.peek().getIndentationType());
         } else {
             this.indentablesStack.pop();
@@ -28,18 +28,21 @@ public class IndentationStack {
 
     public void push(IndentationType type) throws IndentationStackException {
         if (this.indentablesStack.size() > 0 && this.indentablesStack.peek().getIndentationType() == type) {
-            throw  new IndentationStackException(type);
+            throw new IndentationStackException(type);
         }
         else {
             switch (type) {
-                case program -> {
+                case program ->
                     this.indentablesStack.push(new ProgramIndentation());
-                }
-                case importt -> {
+
+                case importt ->
                     this.indentablesStack.push(new ImportIndentation());
-                }
-                case classs -> {
-                }
+
+                case classs ->
+                    this.indentablesStack.push(new ClassIndentation());
+                
+                case variable ->
+                    this.indentablesStack.push(new VariableIndentation());
             }
         }
     }

@@ -1,7 +1,7 @@
 import Hero
 import Heroo
 
-class Hi {
+class Hi(Kia, Kiaj) {
    int myVar
    bool myVar
 
