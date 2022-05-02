@@ -1,11 +1,15 @@
 package Indentation;
 
 public enum IndentationType {
+
     program("program"),
     importt("import"),
     classs("class"),
-
     variable("variable"),
+    array("array"),
+    concstructor("concstructor"),
+
+    parameters("parameters")
     ;
 
     private final String name;

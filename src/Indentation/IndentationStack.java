@@ -32,17 +32,19 @@ public class IndentationStack {
         }
         else {
             switch (type) {
-                case program ->
-                    this.indentablesStack.push(new ProgramIndentation());
+                case program -> this.indentablesStack.push(new ProgramIndentation());
 
-                case importt ->
-                    this.indentablesStack.push(new ImportIndentation());
+                case importt -> this.indentablesStack.push(new ImportIndentation());
 
-                case classs ->
-                    this.indentablesStack.push(new ClassIndentation());
-                
-                case variable ->
-                    this.indentablesStack.push(new VariableIndentation());
+                case classs -> this.indentablesStack.push(new ClassIndentation());
+
+                case variable -> this.indentablesStack.push(new VariableIndentation());
+
+                case array -> this.indentablesStack.push(new ArrayIndentation());
+
+                case concstructor -> this.indentablesStack.push(new ConcstructorIndentation());
+
+                case parameters -> this.indentablesStack.push(new ParametersIndentation());
             }
         }
     }
