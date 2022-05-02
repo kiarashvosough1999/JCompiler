@@ -1,49 +1,60 @@
-grammar jython;
+grammar Jython;
 
 program : importclass* (classDef)? ;
 
-importclass : 'import' CLASSNAME ;
+importclass : 'import' importName = CLASSNAME ;
 
-classDef : 'class' CLASSNAME ('(' CLASSNAME (',' CLASSNAME)* ')')? '{' class_body* '}';
+classDef : 'class' className = CLASSNAME ('(' classParentName = CLASSNAME (',' otherClassParentName = CLASSNAME)* ')')? '{' class_body* '}';
 
 class_body : varDec | methodDec | constructor | arrayDec ;
 
-varDec : (TYPE | CLASSNAME) ID ;
+varDec : variableType = (TYPE | CLASSNAME) varibaleName = ID ;
 
-arrayDec : (TYPE | CLASSNAME) '['INTEGER']' ID ;
+arrayDec : arrayType = (TYPE | CLASSNAME) '['arraySize = INTEGER']' arrayVaribaleName = ID ;
 
-methodDec : 'def' ((TYPE | CLASSNAME)|'void') ID '(' parameter* ')''{' ( statement)* '}';
+methodDec : 'def' methodReturnType = (TYPE | CLASSNAME |'void') methodName = ID '(' methodParameters = parameter* ')''{' (statement)* '}';
 
-constructor : 'def' (TYPE | CLASSNAME) '(' parameter* ')''{' ( statement)* '}' ;
+constructor : 'def' cosntructorType = (TYPE | CLASSNAME) '(' constructorParameters = parameter* ')''{' ( statement)* '}' ;
 
 parameter : varDec (',' varDec)* ;
 
-statement : varDec | assignment | print_statment | method_call | return_statment
-|if_statment | while_statment | if_else_statment | for_statment;
+statement : varDec | assignment | print_statment | method_call | return_statment |if_statment | while_statment | if_else_statment | for_statment;
 
 return_statment : 'return' exp ;
 
 condition_list : condition (('or'|'and') condition)* ;
 
 condition : BOOL | prefixexp | (exp) relational_operators (exp);
+
 if_statment : 'if' '(' condition_list ')' '{' statement* '}';
+
 while_statment : 'while' '(' condition_list ')' '{' statement* '}' ;
+
 if_else_statment :'if' '(' condition_list ')' '{' statement* '}' ('elif' '(' condition_list ')' '{' statement* '}')* 'else' '{' statement* '}' ;
+
 print_statment : 'print' '(' (prefixexp | (TYPE | CLASSNAME) args | INTEGER |STRING | BOOL) ')' ;
+
 for_statment : 'for' ID 'in' ID '{' statement* '}'
 | 'for' ID 'in' 'range''('INTEGER (',' INTEGER)? (',' INTEGER)? ')' '{' statement* '}' ;
+
 method_call : ID ('.')? args ;
-assignment : prefixexp assignment_operators exp
-| varDec assignment_operators exp
-| arrayDec '=' (TYPE | CLASSNAME) args ('['INTEGER']') ;
-exp :'none' | BOOL | INTEGER | STRING | FLOAT | prefixexp | exp arithmetic_operator exp
-| (TYPE | CLASSNAME) args | '('exp')' | ID args ;
+
+assignment : prefixexp assignment_operators exp | varDec assignment_operators exp | arrayDec '=' (TYPE | CLASSNAME) args ('['INTEGER']') ;
+
+exp :'none' | BOOL | INTEGER | STRING | FLOAT | prefixexp | exp arithmetic_operator exp | (TYPE | CLASSNAME) args | '('exp')' | ID args ;
+
 prefixexp : ID | prefixexp '[' INTEGER ']' | prefixexp '.' ID | prefixexp '.' ID args ;
+
 args : '(' (explist)? ')' ;
+
 explist : exp (',' exp)*;
+
 arithmetic_operator: '+' | '-' | '*' | '/' | '%' ;
+
 relational_operators : '<' | '>' | '<=' | '>=' | '==' | '!=' ;
+
 assignment_operators : '=' | '+=' | '-=' | '*=' | '/=' ;
+
 
 TYPE: INT | FLOATING_POINT | STRING | BOOL;
 INT: 'int';
