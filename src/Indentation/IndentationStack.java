@@ -45,6 +45,10 @@ public class IndentationStack {
                 case concstructor -> this.indentablesStack.push(new ConcstructorIndentation());
 
                 case parameters -> this.indentablesStack.push(new ParametersIndentation());
+
+                case method -> this.indentablesStack.push(new MethodIndentation());
+
+                case statement -> this.indentablesStack.push(new StatementIndentation());
             }
         }
     }

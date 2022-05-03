@@ -1,6 +1,6 @@
 grammar Jython;
 
-program : importclass* (classDef)? ;
+program : importclass* (classDef)* ;
 
 importclass : 'import' importName = CLASSNAME ;
 
@@ -12,7 +12,7 @@ varDec : variableType = (TYPE | CLASSNAME) varibaleName = ID ;
 
 arrayDec : arrayType = (TYPE | CLASSNAME) '['arraySize = INTEGER']' arrayVaribaleName = ID ;
 
-methodDec : 'def' methodReturnType = (TYPE | CLASSNAME |'void') methodName = ID '(' methodParameters = parameter* ')''{' (statement)* '}';
+methodDec : 'def' methodReturnType = (TYPE | CLASSNAME |'void') methodName = ID '(' methodParameters = parameter* ')''{' methodStatement = statement* '}';
 
 constructor : 'def' cosntructorType = (TYPE | CLASSNAME) '(' constructorParameters = parameter* ')''{' ( statement)* '}' ;
 

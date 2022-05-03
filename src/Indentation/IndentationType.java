@@ -8,8 +8,9 @@ public enum IndentationType {
     variable("variable"),
     array("array"),
     concstructor("concstructor"),
-
-    parameters("parameters")
+    parameters("parameters"),
+    method("method"),
+    statement("statement")
     ;
 
     private final String name;
