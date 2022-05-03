@@ -218,12 +218,19 @@ public class ProgramPrinter implements JythonListener {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(this.indentationStack.getIndentation());
-        stringBuilder.append("class method: ");
-        stringBuilder.append(ctx.methodName.getText());
-        if (ctx.methodReturnType != null) {
-            stringBuilder.append("/ return type: ");
-            stringBuilder.append(ctx.methodReturnType.getText());
+
+        if (ctx.methodName.getText().equals("main")) {
+            stringBuilder.append(ctx.methodName.getText());
+            stringBuilder.append(" method");
+        } else {
+            stringBuilder.append("class method: ");
+            stringBuilder.append(ctx.methodName.getText());
+            if (ctx.methodReturnType != null && !ctx.methodReturnType.getText().equals("void")) {
+                stringBuilder.append("/ return type: ");
+                stringBuilder.append(ctx.methodReturnType.getText());
+            }
         }
+
         stringBuilder.append(" {");
         System.out.println(stringBuilder);
     }

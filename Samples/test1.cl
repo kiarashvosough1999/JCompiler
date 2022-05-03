@@ -51,7 +51,7 @@ class Human(Nothing, Nothing2){
             self.isHungry = self.checkIsHungry()
         }
     }
-    def bool checkIsHungry(){
-        return true
+    def void main(){
+
     }
 }
