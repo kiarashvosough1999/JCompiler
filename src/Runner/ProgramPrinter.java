@@ -142,7 +142,6 @@ public class ProgramPrinter implements JythonListener {
     public void enterVarDec(JythonParser.VarDecContext ctx) {
         // parameters
         if (ctx.parent.parent.getChild(0).getText().equals("def")) {
-
         } else { // local declarations
             try {
                 this.indentationStack.push(IndentationType.variable);
@@ -242,10 +241,20 @@ public class ProgramPrinter implements JythonListener {
      */
     @Override
     public void exitMethodDec(JythonParser.MethodDecContext ctx) {
+//        System.out.println(this.indentationStack.getNestedCounter());
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(this.indentationStack.getIndentation());
-        stringBuilder.append("}");
-        System.out.println(stringBuilder);
+
+        if (this.indentationStack.getNestedCounter() > 1) {
+            stringBuilder.append("    ");
+            stringBuilder.append("nested statement { }");
+            System.out.println(stringBuilder);
+            System.out.println(this.indentationStack.getIndentation() + "}");
+            this.indentationStack.setNestedToZero();
+        } else {
+            stringBuilder.append("}");
+            System.out.println(stringBuilder);
+        }
         try {
             this.indentationStack.pop(IndentationType.method);
         } catch (IndentationStackException ignored) {}
@@ -341,8 +350,13 @@ public class ProgramPrinter implements JythonListener {
     @Override
     public void enterStatement(JythonParser.StatementContext ctx) {
 
-
-        if (ctx.varDec() != null) {
+        if (ctx.for_statment() != null ||
+                ctx.while_statment() != null ||
+                ctx.if_statment() != null ||
+                ctx.if_else_statment() != null) {
+            this.indentationStack.increaseNestedByOne();
+        }
+        if (ctx.varDec() != null && this.indentationStack.getNestedCounter() == 0) {
             try {
                 this.indentationStack.push(IndentationType.statement);
             } catch (IndentationStackException ignored) {}

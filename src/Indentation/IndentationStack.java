@@ -6,8 +6,27 @@ public class IndentationStack {
 
     private final Stack<Indentable> indentablesStack;
 
+    private Integer nestedCounter;
+
     public IndentationStack() {
         this.indentablesStack = new Stack<>();
+        this.nestedCounter = 0;
+    }
+
+    public Integer getNestedCounter() {
+        return nestedCounter;
+    }
+
+    public void increaseNestedByOne() {
+        this.nestedCounter += 1;
+    }
+
+    public void decreaseNestedByOne() {
+        this.nestedCounter -= 1;
+    }
+
+    public void setNestedToZero() {
+        this.nestedCounter = 0;
     }
 
     public String getIndentation() {

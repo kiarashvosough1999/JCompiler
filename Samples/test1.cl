@@ -49,6 +49,9 @@ class Human(Nothing, Nothing2){
             Food newFood = Food()
             eat(newFood)
             self.isHungry = self.checkIsHungry()
+            if (true) {
+               Kia kiki
+            }
         }
     }
     def void main(){

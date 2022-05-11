@@ -32,10 +32,9 @@ while_statment : 'while' '(' condition_list ')' '{' statement* '}' ;
 
 if_else_statment :'if' '(' condition_list ')' '{' statement* '}' ('elif' '(' condition_list ')' '{' statement* '}')* 'else' '{' statement* '}' ;
 
-print_statment : 'print' '(' (prefixexp | (TYPE | CLASSNAME) args | INTEGER |STRING | BOOL) ')' ;
+print_statment : 'print' '(' (prefixexp | (TYPE | CLASSNAME) args | INTEGER | STRING | BOOL) ')' ;
 
-for_statment : 'for' ID 'in' ID '{' statement* '}'
-| 'for' ID 'in' 'range''('INTEGER (',' INTEGER)? (',' INTEGER)? ')' '{' statement* '}' ;
+for_statment : 'for' ID 'in' ID '{' statement* '}' | 'for' ID 'in' 'range''('INTEGER (',' INTEGER)? (',' INTEGER)? ')' '{' statement* '}' ;
 
 method_call : ID ('.')? args ;
 
