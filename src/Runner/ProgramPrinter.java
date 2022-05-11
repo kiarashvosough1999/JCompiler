@@ -1,5 +1,6 @@
 package Runner;
 
+import Indentation.ConcstructorIndentation;
 import Indentation.IndentationStack;
 import Indentation.IndentationStackException;
 import Indentation.IndentationType;
@@ -7,6 +8,7 @@ import gen.JythonListener;
 import gen.JythonParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 public class ProgramPrinter implements JythonListener {
@@ -60,7 +62,9 @@ public class ProgramPrinter implements JythonListener {
      */
     @Override
     public void exitImportclass(JythonParser.ImportclassContext ctx) {
-
+        try {
+            this.indentationStack.pop(IndentationType.importt);
+        } catch (IndentationStackException ignored) { }
     }
 
     /**
@@ -70,7 +74,27 @@ public class ProgramPrinter implements JythonListener {
      */
     @Override
     public void enterClassDef(JythonParser.ClassDefContext ctx) {
+        try {
+            this.indentationStack.push(IndentationType.classs);
+        } catch (IndentationStackException ignored) {}
 
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(this.indentationStack.getIndentation());
+        stringBuilder.append("class: ");
+        stringBuilder.append(ctx.className.getText());
+
+        if (ctx.classParentName != null) {
+            stringBuilder.append("/ ");
+            stringBuilder.append("class parents: ");
+            stringBuilder.append(ctx.classParentName.getText());
+            stringBuilder.append(", ");
+            if (ctx.otherClassParentName != null) {
+                stringBuilder.append(ctx.otherClassParentName.getText());
+                stringBuilder.append(", ");
+            }
+        }
+        stringBuilder.append("{");
+        System.out.println(stringBuilder);
     }
 
     /**
@@ -80,7 +104,13 @@ public class ProgramPrinter implements JythonListener {
      */
     @Override
     public void exitClassDef(JythonParser.ClassDefContext ctx) {
-
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(this.indentationStack.getIndentation());
+        stringBuilder.append("}");
+        System.out.println(stringBuilder);
+        try {
+            this.indentationStack.pop(IndentationType.classs);
+        } catch (IndentationStackException ignored) {}
     }
 
     /**
@@ -110,7 +140,21 @@ public class ProgramPrinter implements JythonListener {
      */
     @Override
     public void enterVarDec(JythonParser.VarDecContext ctx) {
+        // parameters
+        if (ctx.parent.parent.getChild(0).getText().equals("def")) {
+        } else { // local declarations
+            try {
+                this.indentationStack.push(IndentationType.variable);
+            } catch (IndentationStackException ignored) {}
 
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(this.indentationStack.getIndentation());
+            stringBuilder.append("field: ");
+            stringBuilder.append(ctx.varibaleName.getText());
+            stringBuilder.append("/ type= ");
+            stringBuilder.append(ctx.variableType.getText());
+            System.out.println(stringBuilder);
+        }
     }
 
     /**
@@ -120,7 +164,12 @@ public class ProgramPrinter implements JythonListener {
      */
     @Override
     public void exitVarDec(JythonParser.VarDecContext ctx) {
-
+        if (ctx.parent.parent.getChild(0).getText().equals("def")) {
+        } else {
+            try {
+                this.indentationStack.pop(IndentationType.variable);
+            } catch (IndentationStackException ignored) {}
+        }
     }
 
     /**
@@ -130,7 +179,17 @@ public class ProgramPrinter implements JythonListener {
      */
     @Override
     public void enterArrayDec(JythonParser.ArrayDecContext ctx) {
+        try {
+            this.indentationStack.push(IndentationType.array);
+        } catch (IndentationStackException ignored) {}
 
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(this.indentationStack.getIndentation());
+        stringBuilder.append("field: ");
+        stringBuilder.append(ctx.arrayVaribaleName.getText());
+        stringBuilder.append("/ type= ");
+        stringBuilder.append(ctx.arrayType.getText());
+        System.out.println(stringBuilder);
     }
 
     /**
@@ -140,7 +199,9 @@ public class ProgramPrinter implements JythonListener {
      */
     @Override
     public void exitArrayDec(JythonParser.ArrayDecContext ctx) {
-
+        try {
+            this.indentationStack.pop(IndentationType.array);
+        } catch (IndentationStackException ignored) {}
     }
 
     /**
@@ -150,7 +211,27 @@ public class ProgramPrinter implements JythonListener {
      */
     @Override
     public void enterMethodDec(JythonParser.MethodDecContext ctx) {
+        try {
+            this.indentationStack.push(IndentationType.method);
+        } catch (IndentationStackException ignored) {}
 
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(this.indentationStack.getIndentation());
+
+        if (ctx.methodName.getText().equals("main")) {
+            stringBuilder.append(ctx.methodName.getText());
+            stringBuilder.append(" method");
+        } else {
+            stringBuilder.append("class method: ");
+            stringBuilder.append(ctx.methodName.getText());
+            if (ctx.methodReturnType != null && !ctx.methodReturnType.getText().equals("void")) {
+                stringBuilder.append("/ return type: ");
+                stringBuilder.append(ctx.methodReturnType.getText());
+            }
+        }
+
+        stringBuilder.append(" {");
+        System.out.println(stringBuilder);
     }
 
     /**
@@ -160,7 +241,23 @@ public class ProgramPrinter implements JythonListener {
      */
     @Override
     public void exitMethodDec(JythonParser.MethodDecContext ctx) {
+//        System.out.println(this.indentationStack.getNestedCounter());
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(this.indentationStack.getIndentation());
 
+        if (this.indentationStack.getNestedCounter() > 1) {
+            stringBuilder.append("    ");
+            stringBuilder.append("nested statement { }");
+            System.out.println(stringBuilder);
+            System.out.println(this.indentationStack.getIndentation() + "}");
+            this.indentationStack.setNestedToZero();
+        } else {
+            stringBuilder.append("}");
+            System.out.println(stringBuilder);
+        }
+        try {
+            this.indentationStack.pop(IndentationType.method);
+        } catch (IndentationStackException ignored) {}
     }
 
     /**
@@ -170,7 +267,16 @@ public class ProgramPrinter implements JythonListener {
      */
     @Override
     public void enterConstructor(JythonParser.ConstructorContext ctx) {
+        try {
+            this.indentationStack.push(IndentationType.concstructor);
+        } catch (IndentationStackException ignored) {}
 
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(this.indentationStack.getIndentation());
+        stringBuilder.append("class constructor: ");
+        stringBuilder.append(ctx.cosntructorType.getText());
+        stringBuilder.append("{");
+        System.out.println(stringBuilder);
     }
 
     /**
@@ -180,7 +286,13 @@ public class ProgramPrinter implements JythonListener {
      */
     @Override
     public void exitConstructor(JythonParser.ConstructorContext ctx) {
-
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(this.indentationStack.getIndentation());
+        stringBuilder.append("}");
+        System.out.println(stringBuilder);
+        try {
+            this.indentationStack.pop(IndentationType.concstructor);
+        } catch (IndentationStackException ignored) {}
     }
 
     /**
@@ -190,7 +302,28 @@ public class ProgramPrinter implements JythonListener {
      */
     @Override
     public void enterParameter(JythonParser.ParameterContext ctx) {
+        try {
+            this.indentationStack.push(IndentationType.parameters);
+        } catch (IndentationStackException ignored) {}
 
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(this.indentationStack.getIndentation());
+        stringBuilder.append("parameter list: ");
+        stringBuilder.append("[");
+
+        for (ParseTree child : ctx.children) {
+            int childCount = child.getChildCount();
+            if (childCount > 0) {
+                for (int i = 0; i < childCount; i++) {
+                    stringBuilder.append(child.getChild(i).getText());
+                    if (i == 0) {
+                        stringBuilder.append(" ");
+                    }
+                }
+                stringBuilder.append(", ");
+            }
+        }
+        System.out.print(stringBuilder);
     }
 
     /**
@@ -200,7 +333,13 @@ public class ProgramPrinter implements JythonListener {
      */
     @Override
     public void exitParameter(JythonParser.ParameterContext ctx) {
-
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("]");
+        System.out.println(stringBuilder);
+        try {
+            this.indentationStack.pop(IndentationType.parameters);
+        } catch (IndentationStackException ignored) {
+        }
     }
 
     /**
@@ -211,6 +350,25 @@ public class ProgramPrinter implements JythonListener {
     @Override
     public void enterStatement(JythonParser.StatementContext ctx) {
 
+        if (ctx.for_statment() != null ||
+                ctx.while_statment() != null ||
+                ctx.if_statment() != null ||
+                ctx.if_else_statment() != null) {
+            this.indentationStack.increaseNestedByOne();
+        }
+        if (ctx.varDec() != null && this.indentationStack.getNestedCounter() == 0) {
+            try {
+                this.indentationStack.push(IndentationType.statement);
+            } catch (IndentationStackException ignored) {}
+
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(this.indentationStack.getIndentation());
+            stringBuilder.append("field: ");
+            stringBuilder.append(ctx.varDec().varibaleName.getText());
+            stringBuilder.append("/ type: ");
+            stringBuilder.append(ctx.varDec().variableType.getText());
+            System.out.println(stringBuilder);
+        }
     }
 
     /**
@@ -220,7 +378,9 @@ public class ProgramPrinter implements JythonListener {
      */
     @Override
     public void exitStatement(JythonParser.StatementContext ctx) {
-
+        try {
+            this.indentationStack.pop(IndentationType.statement);
+        } catch (IndentationStackException ignored) {}
     }
 
     /**

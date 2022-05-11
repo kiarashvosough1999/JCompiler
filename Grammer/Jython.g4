@@ -1,6 +1,6 @@
 grammar Jython;
 
-program : importclass* (classDef)? ;
+program : importclass* (classDef)* ;
 
 importclass : 'import' importName = CLASSNAME ;
 
@@ -12,7 +12,7 @@ varDec : variableType = (TYPE | CLASSNAME) varibaleName = ID ;
 
 arrayDec : arrayType = (TYPE | CLASSNAME) '['arraySize = INTEGER']' arrayVaribaleName = ID ;
 
-methodDec : 'def' methodReturnType = (TYPE | CLASSNAME |'void') methodName = ID '(' methodParameters = parameter* ')''{' (statement)* '}';
+methodDec : 'def' methodReturnType = (TYPE | CLASSNAME |'void') methodName = ID '(' methodParameters = parameter* ')''{' methodStatement = statement* '}';
 
 constructor : 'def' cosntructorType = (TYPE | CLASSNAME) '(' constructorParameters = parameter* ')''{' ( statement)* '}' ;
 
@@ -32,10 +32,9 @@ while_statment : 'while' '(' condition_list ')' '{' statement* '}' ;
 
 if_else_statment :'if' '(' condition_list ')' '{' statement* '}' ('elif' '(' condition_list ')' '{' statement* '}')* 'else' '{' statement* '}' ;
 
-print_statment : 'print' '(' (prefixexp | (TYPE | CLASSNAME) args | INTEGER |STRING | BOOL) ')' ;
+print_statment : 'print' '(' (prefixexp | (TYPE | CLASSNAME) args | INTEGER | STRING | BOOL) ')' ;
 
-for_statment : 'for' ID 'in' ID '{' statement* '}'
-| 'for' ID 'in' 'range''('INTEGER (',' INTEGER)? (',' INTEGER)? ')' '{' statement* '}' ;
+for_statment : 'for' ID 'in' ID '{' statement* '}' | 'for' ID 'in' 'range''('INTEGER (',' INTEGER)? (',' INTEGER)? ')' '{' statement* '}' ;
 
 method_call : ID ('.')? args ;
 
