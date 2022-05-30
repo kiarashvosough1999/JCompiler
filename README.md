@@ -20,7 +20,7 @@ The project splited into 3 phase. Each phase has its own tag on the repository, 
 
 | Platform | Minimum Java Version | Installation | Status |
 | --- | --- | --- | --- |
-| Any | 17.0 | [CocoaPods](https://openjdk.java.net) | Tested |
+| Any | 17.0 | [OpenJDK](https://openjdk.java.net) | Tested |
 
 ## Usage
 
