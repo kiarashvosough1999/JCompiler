@@ -37,4 +37,4 @@ Feel free to share your ideas or any other problems. Pull requests are welcomed.
 
 ## License
 
-JCompiler is released under an MIT license. See [LICENSE]() for more information.
+JCompiler is released under an MIT license. See [LICENSE](https://github.com/kiarashvosough1999/JCompiler/blob/master/LICENSE) for more information.
