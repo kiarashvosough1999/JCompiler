@@ -28,7 +28,7 @@ The project splited into 3 phase. Each phase has its own tag on the repository, 
 
 for using phase one, switch to latest tag v1.0.0 to see the implementation. 
 You just need to implement your own **Jython** code in `test1.cl` file and run the main function.
-As a result you see the terminal/concol output of the code you implemented in a spicific and general format
+As a result you see the terminal/console output of the code you implemented in a spicific and general format
 whch can be observed inside [Templates](https://github.com/kiarashvosough1999/JCompiler/tree/master/Samples/outputTemplate).
 
 ## Contributors
