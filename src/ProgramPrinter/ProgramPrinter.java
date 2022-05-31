@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package Runner;
+package ProgramPrinter;
 
 import Indentation.ConcstructorIndentation;
 import Indentation.IndentationStack;
