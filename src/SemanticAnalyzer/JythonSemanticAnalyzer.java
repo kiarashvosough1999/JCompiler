@@ -1,15 +1,18 @@
 package SemanticAnalyzer;
 
 import SemanticAnalyzer.Scopes.ProgramScope;
+import SemanticAnalyzer.SymbolValues.ImportValue;
 import gen.JythonListener;
 import gen.JythonParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.util.ArrayList;
+
 public class JythonSemanticAnalyzer implements JythonListener {
 
-    private Scope scope = null;
+    private final ArrayList<Scope> scopes = new ArrayList<>();
     private Scope ongoingScope = null;
 
     /**
@@ -19,11 +22,10 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterProgram(JythonParser.ProgramContext ctx) {
+//        System.out.println("here");
         ProgramScope programScope = new ProgramScope("Program 1");
-        if (scope == null) {
-            scope = programScope;
-            ongoingScope = programScope;
-        }
+        scopes.add(programScope);
+        ongoingScope = programScope;
     }
 
     /**
@@ -34,6 +36,10 @@ public class JythonSemanticAnalyzer implements JythonListener {
     @Override
     public void exitProgram(JythonParser.ProgramContext ctx) {
         ongoingScope = null;
+//        System.out.println(scopes.size());
+        for (Scope scope : scopes) {
+            System.out.println(scope.getSymbolTable().toString());
+        }
     }
 
     /**
@@ -43,6 +49,9 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterImportclass(JythonParser.ImportclassContext ctx) {
+//        System.out.println("here2");
+        ImportValue importValue = new ImportValue(ctx.importName.getText());
+        ongoingScope.getSymbolTable().insert(importValue);
     }
 
     /**

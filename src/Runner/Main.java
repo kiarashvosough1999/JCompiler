@@ -21,6 +21,7 @@
 package Runner;
 
 import ProgramPrinter.ProgramPrinter;
+import SemanticAnalyzer.JythonSemanticAnalyzer;
 import gen.JythonLexer;
 import gen.JythonListener;
 import gen.JythonParser;
@@ -42,7 +43,7 @@ public class Main {
         parser.setBuildParseTree(true);
         ParseTree tree = parser.program();
         ParseTreeWalker parseTreeWalker = new ParseTreeWalker();
-        JythonListener listener = new ProgramPrinter();
+        JythonSemanticAnalyzer listener = new JythonSemanticAnalyzer();
 
         parseTreeWalker.walk(listener, tree);
     }

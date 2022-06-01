@@ -23,7 +23,7 @@ public class ImportValue extends Object implements SymbolValue {
     public Object getValue() {
         return Constants.VALUE +
                 Constants.Colon +
-                this.kind.toString() +
+                this.kind +
                 Constants.LeftParan +
                 Constants.Name +
                 Constants.Colon +
@@ -34,6 +34,11 @@ public class ImportValue extends Object implements SymbolValue {
     @Override
     public Boolean isDefined() {
         return null;
+    }
+
+    @Override
+    public SymbolValueKind getKind() {
+        return this.kind;
     }
 
     @Override

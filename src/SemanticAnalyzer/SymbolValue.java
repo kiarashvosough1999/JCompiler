@@ -6,6 +6,8 @@ public interface SymbolValue {
     Object getValue();
     Boolean isDefined();
 
+    SymbolValueKind getKind();
+
     String getType();
     String getReturnType();
     String getParameters();
