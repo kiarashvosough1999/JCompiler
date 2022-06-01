@@ -12,4 +12,8 @@ public class Constants {
     public final static String Name = " Name ";
 
     public final static String VerticalLine = " | ";
+
+    public final static String Parent = " Parent ";
+
+    public final static String Comma = ", ";
 }

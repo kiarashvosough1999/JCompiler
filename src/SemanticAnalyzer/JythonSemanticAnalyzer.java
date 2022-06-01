@@ -1,6 +1,7 @@
 package SemanticAnalyzer;
 
 import SemanticAnalyzer.Scopes.ProgramScope;
+import SemanticAnalyzer.SymbolValues.ClasssValue;
 import SemanticAnalyzer.SymbolValues.ImportValue;
 import gen.JythonListener;
 import gen.JythonParser;
@@ -22,7 +23,6 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterProgram(JythonParser.ProgramContext ctx) {
-//        System.out.println("here");
         ProgramScope programScope = new ProgramScope("Program 1");
         scopes.add(programScope);
         ongoingScope = programScope;
@@ -36,7 +36,6 @@ public class JythonSemanticAnalyzer implements JythonListener {
     @Override
     public void exitProgram(JythonParser.ProgramContext ctx) {
         ongoingScope = null;
-//        System.out.println(scopes.size());
         for (Scope scope : scopes) {
             System.out.println(scope.getSymbolTable().toString());
         }
@@ -49,7 +48,6 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterImportclass(JythonParser.ImportclassContext ctx) {
-//        System.out.println("here2");
         ImportValue importValue = new ImportValue(ctx.importName.getText());
         ongoingScope.getSymbolTable().insert(importValue);
     }
@@ -72,6 +70,20 @@ public class JythonSemanticAnalyzer implements JythonListener {
     @Override
     public void enterClassDef(JythonParser.ClassDefContext ctx) {
 
+        ArrayList<String> stringArrayList = new ArrayList<>();
+
+        if (ctx.classParentName != null) {
+            stringArrayList.add(ctx.classParentName.getText());
+            if (ctx.otherClassParentName != null) {
+                stringArrayList.add(ctx.otherClassParentName.getText());
+            }
+        }
+
+        ClasssValue classValue = new ClasssValue(
+                ctx.className.getText(),
+                stringArrayList
+                );
+        ongoingScope.getSymbolTable().insert(classValue);
     }
 
     /**
