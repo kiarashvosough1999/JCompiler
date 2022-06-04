@@ -1,5 +1,6 @@
 package SemanticAnalyzer;
 
+import SemanticAnalyzer.Scopes.ClassScope;
 import SemanticAnalyzer.Scopes.ProgramScope;
 import SemanticAnalyzer.SymbolValues.ClasssValue;
 import SemanticAnalyzer.SymbolValues.ImportValue;
@@ -10,11 +11,13 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class JythonSemanticAnalyzer implements JythonListener {
 
-    private final ArrayList<Scope> scopes = new ArrayList<>();
-    private Scope ongoingScope = null;
+    private final ArrayList<Scope> topScopes = new ArrayList<>();
+
+    private final Stack<Scope> scopes = new Stack<>();
 
     /**
      * Enter a parse tree produced by {@link JythonParser#program}.
@@ -24,8 +27,8 @@ public class JythonSemanticAnalyzer implements JythonListener {
     @Override
     public void enterProgram(JythonParser.ProgramContext ctx) {
         ProgramScope programScope = new ProgramScope("Program 1");
-        scopes.add(programScope);
-        ongoingScope = programScope;
+        scopes.push(programScope);
+        topScopes.add(programScope);
     }
 
     /**
@@ -35,10 +38,10 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void exitProgram(JythonParser.ProgramContext ctx) {
-        ongoingScope = null;
         for (Scope scope : scopes) {
-            System.out.println(scope.getSymbolTable().toString());
+            System.out.println(scope);
         }
+        scopes.pop();
     }
 
     /**
@@ -49,7 +52,7 @@ public class JythonSemanticAnalyzer implements JythonListener {
     @Override
     public void enterImportclass(JythonParser.ImportclassContext ctx) {
         ImportValue importValue = new ImportValue(ctx.importName.getText());
-        ongoingScope.getSymbolTable().insert(importValue);
+        scopes.peek().getSymbolTable().insert(importValue);
     }
 
     /**
@@ -83,7 +86,17 @@ public class JythonSemanticAnalyzer implements JythonListener {
                 ctx.className.getText(),
                 stringArrayList
                 );
-        ongoingScope.getSymbolTable().insert(classValue);
+        scopes.peek().getSymbolTable().insert(classValue);
+
+        // New Scope
+
+        ClassScope classScope = new ClassScope(ctx.className.getText());
+        try {
+            scopes.peek().insertScope(classScope);
+        } catch (SemanticException semanticException) {
+            System.out.println(semanticException);
+        }
+        scopes.push(classScope);
     }
 
     /**
@@ -93,7 +106,7 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void exitClassDef(JythonParser.ClassDefContext ctx) {
-
+        scopes.pop();
     }
 
     /**

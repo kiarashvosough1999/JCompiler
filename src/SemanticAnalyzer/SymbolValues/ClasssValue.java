@@ -3,12 +3,12 @@ package SemanticAnalyzer.SymbolValues;
 import Constants.Constants;
 import SemanticAnalyzer.SymbolValue;
 import SemanticAnalyzer.SymbolValueKind;
-
 import java.util.ArrayList;
 
 public class ClasssValue extends Object implements SymbolValue {
 
     final private String name;
+
     final private SymbolValueKind kind;
 
     final private ArrayList<String> classParents;

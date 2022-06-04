@@ -6,7 +6,7 @@ import SemanticAnalyzer.SemanticException;
 import SemanticAnalyzer.SymbolTable;
 import java.util.ArrayList;
 
-public class ProgramScope implements Scope {
+public class ClassScope implements Scope {
 
     private final SymbolTable symbolTable;
 
@@ -16,7 +16,7 @@ public class ProgramScope implements Scope {
 
     private final ArrayList<Scope> childScopes;
 
-    public ProgramScope(String scopeName) {
+    public ClassScope(String scopeName) {
         this.symbolTable = new SymbolTable();
         this.scopeType = ScopeType.program;
         this.scopeName = scopeName;
@@ -70,7 +70,6 @@ public class ProgramScope implements Scope {
         stringBuilder.append("----------");
         stringBuilder.append(this.getScopeName());
         stringBuilder.append("----------");
-        stringBuilder.append("\n");
         stringBuilder.append(getSymbolTable().toString());
         stringBuilder.append("\n");
         for (Scope scope: childScopes) {
