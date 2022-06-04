@@ -2,8 +2,9 @@ package SemanticAnalyzer;
 
 import SemanticAnalyzer.Scopes.ClassScope;
 import SemanticAnalyzer.Scopes.ProgramScope;
-import SemanticAnalyzer.SymbolValues.ClasssValue;
-import SemanticAnalyzer.SymbolValues.ImportValue;
+import SemanticAnalyzer.SymbolValues.Values.ClassFieldValue;
+import SemanticAnalyzer.SymbolValues.Values.ClasssValue;
+import SemanticAnalyzer.SymbolValues.Values.ImportValue;
 import gen.JythonListener;
 import gen.JythonParser;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -136,7 +137,14 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterVarDec(JythonParser.VarDecContext ctx) {
-
+        if (scopes.peek().getScopeType() == ScopeType.classs) {
+            ClassFieldValue classFieldValue = new ClassFieldValue(
+                    ctx.varibaleName.getText(),
+                    ctx.variableType.getText(),
+                    null
+                    );
+            scopes.peek().getSymbolTable().insert(classFieldValue);
+        }
     }
 
     /**
@@ -156,7 +164,14 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterArrayDec(JythonParser.ArrayDecContext ctx) {
-
+        if (scopes.peek().getScopeType() == ScopeType.classs) {
+            ClassFieldValue classFieldValue = new ClassFieldValue(
+                    ctx.arrayVaribaleName.getText(),
+                    ctx.arrayType.getText(),
+                    ctx.arraySize.getText()
+            );
+            scopes.peek().getSymbolTable().insert(classFieldValue);
+        }
     }
 
     /**

@@ -1,4 +1,4 @@
-package SemanticAnalyzer;
+package SemanticAnalyzer.SymbolValues;
 
 public interface SymbolValue {
 

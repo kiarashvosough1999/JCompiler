@@ -1,11 +1,13 @@
 package SemanticAnalyzer;
 
+import SemanticAnalyzer.SymbolValues.SymbolValue;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class SymbolTable {
 
-    private final Map<String,SymbolValue> table;
+    private final Map<String, SymbolValue> table;
 
     public SymbolTable() {
         this.table = new HashMap<>();

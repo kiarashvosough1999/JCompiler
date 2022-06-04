@@ -18,7 +18,7 @@ public class ClassScope implements Scope {
 
     public ClassScope(String scopeName) {
         this.symbolTable = new SymbolTable();
-        this.scopeType = ScopeType.program;
+        this.scopeType = ScopeType.classs;
         this.scopeName = scopeName;
         this.childScopes = new ArrayList<>();
     }
@@ -70,6 +70,7 @@ public class ClassScope implements Scope {
         stringBuilder.append("----------");
         stringBuilder.append(this.getScopeName());
         stringBuilder.append("----------");
+        stringBuilder.append("\n");
         stringBuilder.append(getSymbolTable().toString());
         stringBuilder.append("\n");
         for (Scope scope: childScopes) {

@@ -1,8 +1,8 @@
-package SemanticAnalyzer.SymbolValues;
+package SemanticAnalyzer.SymbolValues.Values;
 
 import Constants.Constants;
-import SemanticAnalyzer.SymbolValue;
-import SemanticAnalyzer.SymbolValueKind;
+import SemanticAnalyzer.SymbolValues.SymbolValue;
+import SemanticAnalyzer.SymbolValues.SymbolValueKind;
 
 public class ImportValue extends Object implements SymbolValue {
 
@@ -21,14 +21,7 @@ public class ImportValue extends Object implements SymbolValue {
 
     @Override
     public Object getValue() {
-        return Constants.VALUE +
-                Constants.Colon +
-                this.kind +
-                Constants.LeftParan +
-                Constants.Name +
-                Constants.Colon +
-                this.name +
-                Constants.RightParan;
+        return null;
     }
 
     @Override
@@ -58,6 +51,14 @@ public class ImportValue extends Object implements SymbolValue {
 
     @Override
     public String toString() {
-        return Constants.VerticalLine + getValue();
+        return Constants.VerticalLine +
+                Constants.VALUE +
+                Constants.Colon +
+                this.kind +
+                Constants.LeftParan +
+                Constants.Name +
+                Constants.Colon +
+                this.name +
+                Constants.RightParan;
     }
 }
