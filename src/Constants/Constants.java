@@ -26,4 +26,16 @@ public class Constants {
     public final static String ClassTyped = " classtyped ";
 
     public final static String Equal = " = ";
+
+    public final static String Constructor = " constructor ";
+
+    public final static String ReturnTYPE = " returntype ";
+
+    public final static String ParamList = " parameter list ";
+
+    public final static String Index = " index ";
+
+    public final static String Underline = "_";
+
+    public final static String Key = " Key ";
 }

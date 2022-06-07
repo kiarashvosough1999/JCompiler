@@ -1,7 +1,7 @@
-package SemanticAnalyzer.Scopes;
+package SemanticAnalyzer.JScope.Scopes;
 
-import SemanticAnalyzer.Scope;
-import SemanticAnalyzer.ScopeType;
+import SemanticAnalyzer.JScope.Scope;
+import SemanticAnalyzer.JScope.ScopeType;
 import SemanticAnalyzer.SemanticException;
 import SemanticAnalyzer.SymbolTable;
 import java.util.ArrayList;

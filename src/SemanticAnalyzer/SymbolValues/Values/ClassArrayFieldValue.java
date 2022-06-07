@@ -5,20 +5,22 @@ import SemanticAnalyzer.Helper;
 import SemanticAnalyzer.SymbolValues.SymbolValue;
 import SemanticAnalyzer.SymbolValues.SymbolValueKind;
 
-public class ClassFieldValue implements SymbolValue {
+public class ClassArrayFieldValue implements SymbolValue {
 
     final private String name;
 
     final private String type;
 
+    final private String arraySize;
+
     final private SymbolValueKind kind;
 
-    public ClassFieldValue(String name, String type) {
+    public ClassArrayFieldValue(String name, String type, String arraySize) {
         this.type = type;
         this.name = name;
-        this.kind = SymbolValueKind.classField;
+        this.kind = SymbolValueKind.classArrayField;
+        this.arraySize = arraySize;
     }
-
 
     @Override
     public String getName() {

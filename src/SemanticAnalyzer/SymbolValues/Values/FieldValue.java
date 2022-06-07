@@ -5,7 +5,7 @@ import SemanticAnalyzer.Helper;
 import SemanticAnalyzer.SymbolValues.SymbolValue;
 import SemanticAnalyzer.SymbolValues.SymbolValueKind;
 
-public class ClassFieldValue implements SymbolValue {
+public class FieldValue implements SymbolValue {
 
     final private String name;
 
@@ -13,12 +13,11 @@ public class ClassFieldValue implements SymbolValue {
 
     final private SymbolValueKind kind;
 
-    public ClassFieldValue(String name, String type) {
+    public FieldValue(String name, String type) {
         this.type = type;
         this.name = name;
-        this.kind = SymbolValueKind.classField;
+        this.kind = SymbolValueKind.field;
     }
-
 
     @Override
     public String getName() {

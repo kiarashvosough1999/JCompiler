@@ -1,7 +1,8 @@
-package SemanticAnalyzer.Scopes;
+package SemanticAnalyzer.JScope.Scopes;
 
-import SemanticAnalyzer.Scope;
-import SemanticAnalyzer.ScopeType;
+import SemanticAnalyzer.JScope.ParameteredScope;
+import SemanticAnalyzer.JScope.Scope;
+import SemanticAnalyzer.JScope.ScopeType;
 import SemanticAnalyzer.SemanticException;
 import SemanticAnalyzer.SymbolTable;
 import java.util.ArrayList;
@@ -72,6 +73,15 @@ public class ClassScope implements Scope {
         stringBuilder.append("----------");
         stringBuilder.append("\n");
         stringBuilder.append(getSymbolTable().toString());
+
+        for (Scope scope: childScopes) {
+            ParameteredScope parameteredScope = (ParameteredScope) scope;
+            if (parameteredScope != null) {
+                stringBuilder.append(parameteredScope.getAsValue());
+                stringBuilder.append("\n");
+            }
+        }
+
         stringBuilder.append("\n");
         for (Scope scope: childScopes) {
             stringBuilder.append(scope.toString());

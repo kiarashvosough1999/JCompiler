@@ -1,4 +1,7 @@
-package SemanticAnalyzer;
+package SemanticAnalyzer.JScope;
+
+import SemanticAnalyzer.SemanticException;
+import SemanticAnalyzer.SymbolTable;
 
 import java.util.ArrayList;
 

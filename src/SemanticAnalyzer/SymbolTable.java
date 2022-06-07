@@ -1,5 +1,6 @@
 package SemanticAnalyzer;
 
+import Constants.Constants;
 import SemanticAnalyzer.SymbolValues.SymbolValue;
 
 import java.util.HashMap;
@@ -21,6 +22,8 @@ public class SymbolTable {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         for (Map.Entry<String,SymbolValue> entry : this.table.entrySet()){
+            builder.append(Constants.Key);
+            builder.append(Constants.Colon);
             builder.append(entry.getKey());
             builder.append(" ");
             builder.append(entry.getValue().toString());

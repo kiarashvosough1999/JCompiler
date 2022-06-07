@@ -11,6 +11,8 @@ public enum SymbolValueKind {
 
     field("Field"),
 
+    arrayField("ArrayField"),
+
     constructor("Constructor"),
 
     method("Method"),

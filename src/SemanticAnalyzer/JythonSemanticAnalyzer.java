@@ -1,10 +1,12 @@
 package SemanticAnalyzer;
 
-import SemanticAnalyzer.Scopes.ClassScope;
-import SemanticAnalyzer.Scopes.ProgramScope;
-import SemanticAnalyzer.SymbolValues.Values.ClassFieldValue;
-import SemanticAnalyzer.SymbolValues.Values.ClasssValue;
-import SemanticAnalyzer.SymbolValues.Values.ImportValue;
+import SemanticAnalyzer.JScope.ParameteredScope;
+import SemanticAnalyzer.JScope.Scope;
+import SemanticAnalyzer.JScope.ScopeType;
+import SemanticAnalyzer.JScope.Scopes.ClassScope;
+import SemanticAnalyzer.JScope.Scopes.MethodScope;
+import SemanticAnalyzer.JScope.Scopes.ProgramScope;
+import SemanticAnalyzer.SymbolValues.Values.*;
 import gen.JythonListener;
 import gen.JythonParser;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -138,12 +140,20 @@ public class JythonSemanticAnalyzer implements JythonListener {
     @Override
     public void enterVarDec(JythonParser.VarDecContext ctx) {
         if (scopes.peek().getScopeType() == ScopeType.classs) {
-            ClassFieldValue classFieldValue = new ClassFieldValue(
-                    ctx.varibaleName.getText(),
-                    ctx.variableType.getText(),
-                    null
-                    );
-            scopes.peek().getSymbolTable().insert(classFieldValue);
+            if (Helper.isPrimitiveType(ctx.variableType.getText())) {
+                FieldValue classFieldValue = new FieldValue(
+                        ctx.varibaleName.getText(),
+                        ctx.variableType.getText()
+                );
+                scopes.peek().getSymbolTable().insert(classFieldValue);
+            } else {
+                ClassFieldValue classFieldValue = new ClassFieldValue(
+                        ctx.varibaleName.getText(),
+                        ctx.variableType.getText()
+                );
+                scopes.peek().getSymbolTable().insert(classFieldValue);
+            }
+
         }
     }
 
@@ -165,12 +175,21 @@ public class JythonSemanticAnalyzer implements JythonListener {
     @Override
     public void enterArrayDec(JythonParser.ArrayDecContext ctx) {
         if (scopes.peek().getScopeType() == ScopeType.classs) {
-            ClassFieldValue classFieldValue = new ClassFieldValue(
-                    ctx.arrayVaribaleName.getText(),
-                    ctx.arrayType.getText(),
-                    ctx.arraySize.getText()
-            );
-            scopes.peek().getSymbolTable().insert(classFieldValue);
+            if (Helper.isPrimitiveType(ctx.arrayType.getText())) {
+                ArrayFieldValue classFieldValue = new ArrayFieldValue(
+                        ctx.arrayVaribaleName.getText(),
+                        ctx.arrayType.getText(),
+                        ctx.arraySize.getText()
+                );
+                scopes.peek().getSymbolTable().insert(classFieldValue);
+            } else {
+                ClassArrayFieldValue classFieldValue = new ClassArrayFieldValue(
+                        ctx.arrayVaribaleName.getText(),
+                        ctx.arrayType.getText(),
+                        ctx.arraySize.getText()
+                );
+                scopes.peek().getSymbolTable().insert(classFieldValue);
+            }
         }
     }
 
@@ -191,7 +210,17 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterMethodDec(JythonParser.MethodDecContext ctx) {
-
+        MethodScope methodScope = new MethodScope(
+                ctx.methodName.getText(),
+                ctx.methodReturnType.getText(),
+                false
+        );
+        try {
+            scopes.peek().insertScope(methodScope);
+        } catch (SemanticException semanticException) {
+            System.out.println(semanticException);
+        }
+        scopes.push(methodScope);
     }
 
     /**
@@ -201,7 +230,9 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void exitMethodDec(JythonParser.MethodDecContext ctx) {
-
+        if (scopes.peek().getScopeType() == ScopeType.method) {
+            scopes.pop();
+        }
     }
 
     /**
@@ -211,7 +242,16 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterConstructor(JythonParser.ConstructorContext ctx) {
-
+        MethodScope methodScope = new MethodScope(
+                ctx.cosntructorType.getText(),
+                null,
+                true);
+        try {
+            scopes.peek().insertScope(methodScope);
+        } catch (SemanticException semanticException) {
+            System.out.println(semanticException);
+        }
+        scopes.push(methodScope);
     }
 
     /**
@@ -221,7 +261,9 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void exitConstructor(JythonParser.ConstructorContext ctx) {
-
+        if (scopes.peek().getScopeType() == ScopeType.constructor) {
+            scopes.pop();
+        }
     }
 
     /**
@@ -231,7 +273,15 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterParameter(JythonParser.ParameterContext ctx) {
-
+        ParameteredScope peek = (ParameteredScope)scopes.peek();
+        if (peek != null){
+            for (JythonParser.VarDecContext context :ctx.varDec()) {
+                peek.addParameters(
+                        context.varibaleName.getText(),
+                        context.variableType.getText()
+                        );
+            }
+        }
     }
 
     /**

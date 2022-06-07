@@ -5,7 +5,9 @@ import SemanticAnalyzer.Helper;
 import SemanticAnalyzer.SymbolValues.SymbolValue;
 import SemanticAnalyzer.SymbolValues.SymbolValueKind;
 
-public class ClassFieldValue implements SymbolValue {
+public class ArrayFieldValue implements SymbolValue {
+
+    final private String arraySize;
 
     final private String name;
 
@@ -13,12 +15,12 @@ public class ClassFieldValue implements SymbolValue {
 
     final private SymbolValueKind kind;
 
-    public ClassFieldValue(String name, String type) {
+    public ArrayFieldValue(String name, String type, String arraySize) {
         this.type = type;
         this.name = name;
-        this.kind = SymbolValueKind.classField;
+        this.kind = SymbolValueKind.arrayField;
+        this.arraySize = arraySize;
     }
-
 
     @Override
     public String getName() {
@@ -58,6 +60,8 @@ public class ClassFieldValue implements SymbolValue {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(Constants.Key);
+        stringBuilder.append(Constants.Colon);
         stringBuilder.append(Constants.VerticalLine);
         stringBuilder.append(Constants.VALUE);
         stringBuilder.append(Constants.Colon);

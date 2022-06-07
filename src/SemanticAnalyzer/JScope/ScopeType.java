@@ -1,10 +1,11 @@
-package SemanticAnalyzer;
+package SemanticAnalyzer.JScope;
 
 public enum ScopeType {
 
     program("program"),
     classs("class"),
     method("method"),
+    constructor("constructor"),
     iff("if"),
     elsif("elseif"),
     elses("else"),
