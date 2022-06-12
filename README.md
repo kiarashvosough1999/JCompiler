@@ -13,7 +13,7 @@ This is the project assigned to me on Compiler Design course in Ferdowsi Univers
 The project splited into 3 phase. Each phase has its own tag on the repository, sofar I implemented below phases:
 
 - [x] Phase 1 - Formated Program Printer
-- [ ] Phase 2 - Semantic Analysis
+- [x] Phase 2 - Semantic Analysis
 - [ ] Phase 3 - Errors Detection
 
 ## Requirements
