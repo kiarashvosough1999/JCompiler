@@ -17,7 +17,10 @@ public class ClassScope implements Scope {
 
     private final Stack<Scope> childScopes;
 
-    public ClassScope(String scopeName) {
+    private final Integer lineNumber;
+
+    public ClassScope(String scopeName, Integer lineNumber) {
+        this.lineNumber = lineNumber;
         this.symbolTable = new SymbolTable();
         this.scopeType = ScopeType.classs;
         this.scopeName = scopeName;
@@ -66,10 +69,17 @@ public class ClassScope implements Scope {
     }
 
     @Override
+    public Integer getLineNumber() {
+        return lineNumber;
+    }
+
+    @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("----------");
         stringBuilder.append(this.getScopeName());
+        stringBuilder.append("  ");
+        stringBuilder.append(getLineNumber());
         stringBuilder.append("----------");
         stringBuilder.append("\n");
         stringBuilder.append(getSymbolTable().toString());

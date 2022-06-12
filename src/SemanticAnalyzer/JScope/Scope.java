@@ -19,4 +19,6 @@ public interface Scope {
     void insertScope(Scope scope) throws SemanticException;
 
     Scope getScopeByName(String name) throws SemanticException;
+
+    Integer getLineNumber();
 }

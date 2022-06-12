@@ -37,6 +37,8 @@ public class Constants {
 
     public final static String Underline = "_";
 
+    public final static String Method = "Method";
+
     public final static String Key = " Key ";
 
     public final static String If = " if ";

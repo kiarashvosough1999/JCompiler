@@ -25,7 +25,10 @@ public class MethodScope implements ParameteredScope {
 
     private final ArrayList<ParameterModel> parameters;
 
-    public MethodScope(String scopeName, String returnType, Boolean isConstructor) {
+    private final Integer lineNumber;
+
+    public MethodScope(String scopeName, String returnType, Boolean isConstructor, Integer lineNumber) {
+        this.lineNumber = lineNumber;
         this.symbolTable = new SymbolTable();
         this.returnType = returnType == null ? "void" : returnType;
         this.scopeType = isConstructor ? ScopeType.constructor : ScopeType.method;
@@ -49,7 +52,7 @@ public class MethodScope implements ParameteredScope {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(Constants.Key);
         stringBuilder.append(Constants.Colon);
-        stringBuilder.append(Constants.Underline + scopeName);
+        stringBuilder.append(Constants.Method + Constants.Underline + scopeName);
         stringBuilder.append(Constants.VerticalLine);
         stringBuilder.append(Constants.VALUE);
         stringBuilder.append(Constants.Colon);
@@ -141,10 +144,17 @@ public class MethodScope implements ParameteredScope {
     }
 
     @Override
+    public Integer getLineNumber() {
+        return lineNumber;
+    }
+
+    @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("----------");
         stringBuilder.append(this.getScopeName());
+        stringBuilder.append("  ");
+        stringBuilder.append(getLineNumber());
         stringBuilder.append("----------");
         stringBuilder.append("\n");
         stringBuilder.append(getSymbolTable().toString());

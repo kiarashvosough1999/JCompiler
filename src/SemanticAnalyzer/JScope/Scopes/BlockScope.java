@@ -16,7 +16,10 @@ public class BlockScope extends Object implements Scope {
 
     private final Stack<Scope> childScopes;
 
-    public BlockScope(String scopeName) {
+    private final Integer lineNumber;
+
+    public BlockScope(String scopeName, Integer lineNumber) {
+        this.lineNumber = lineNumber;
         this.symbolTable = new SymbolTable();
         this.scopeType = ScopeType.block;
         this.scopeName = scopeName;
@@ -65,10 +68,17 @@ public class BlockScope extends Object implements Scope {
     }
 
     @Override
+    public Integer getLineNumber() {
+        return lineNumber;
+    }
+
+    @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("----------");
         stringBuilder.append(this.getScopeName());
+        stringBuilder.append("  ");
+        stringBuilder.append(getLineNumber());
         stringBuilder.append("----------");
         stringBuilder.append("\n");
         stringBuilder.append(getSymbolTable().toString());
