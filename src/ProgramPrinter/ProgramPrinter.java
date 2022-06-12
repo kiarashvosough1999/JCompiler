@@ -20,10 +20,9 @@
 
 package ProgramPrinter;
 
-import Indentation.ConcstructorIndentation;
-import Indentation.IndentationStack;
-import Indentation.IndentationStackException;
-import Indentation.IndentationType;
+import ProgramPrinter.Indentation.IndentationStack;
+import ProgramPrinter.Indentation.IndentationStackException;
+import ProgramPrinter.Indentation.IndentationType;
 import gen.JythonListener;
 import gen.JythonParser;
 import org.antlr.v4.runtime.ParserRuleContext;

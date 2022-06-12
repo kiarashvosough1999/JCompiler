@@ -1,8 +1,10 @@
 package SemanticAnalyzer;
 
+import Constants.Constants;
 import SemanticAnalyzer.JScope.ParameteredScope;
 import SemanticAnalyzer.JScope.Scope;
 import SemanticAnalyzer.JScope.ScopeType;
+import SemanticAnalyzer.JScope.Scopes.BlockScope;
 import SemanticAnalyzer.JScope.Scopes.ClassScope;
 import SemanticAnalyzer.JScope.Scopes.MethodScope;
 import SemanticAnalyzer.JScope.Scopes.ProgramScope;
@@ -12,7 +14,6 @@ import gen.JythonParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
-
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -139,7 +140,7 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterVarDec(JythonParser.VarDecContext ctx) {
-        if (scopes.peek().getScopeType() == ScopeType.classs) {
+        if (scopes.peek().getScopeType() != ScopeType.classs) {
             if (Helper.isPrimitiveType(ctx.variableType.getText())) {
                 FieldValue classFieldValue = new FieldValue(
                         ctx.varibaleName.getText(),
@@ -153,7 +154,6 @@ public class JythonSemanticAnalyzer implements JythonListener {
                 );
                 scopes.peek().getSymbolTable().insert(classFieldValue);
             }
-
         }
     }
 
@@ -174,7 +174,7 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterArrayDec(JythonParser.ArrayDecContext ctx) {
-        if (scopes.peek().getScopeType() == ScopeType.classs) {
+        if (scopes.peek().getScopeType() != ScopeType.classs) {
             if (Helper.isPrimitiveType(ctx.arrayType.getText())) {
                 ArrayFieldValue classFieldValue = new ArrayFieldValue(
                         ctx.arrayVaribaleName.getText(),
@@ -381,7 +381,13 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterIf_statment(JythonParser.If_statmentContext ctx) {
-
+        BlockScope blockScope = new BlockScope(Constants.If);
+        try {
+            scopes.peek().insertScope(blockScope);
+        } catch (SemanticException semanticException) {
+            System.out.println(semanticException);
+        }
+        scopes.push(blockScope);
     }
 
     /**
@@ -391,7 +397,7 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void exitIf_statment(JythonParser.If_statmentContext ctx) {
-
+        scopes.pop();
     }
 
     /**
@@ -401,7 +407,13 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterWhile_statment(JythonParser.While_statmentContext ctx) {
-
+        BlockScope blockScope = new BlockScope(Constants.While);
+        try {
+            scopes.peek().insertScope(blockScope);
+        } catch (SemanticException semanticException) {
+            System.out.println(semanticException);
+        }
+        scopes.push(blockScope);
     }
 
     /**
@@ -411,7 +423,7 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void exitWhile_statment(JythonParser.While_statmentContext ctx) {
-
+        scopes.pop();
     }
 
     /**
@@ -421,7 +433,13 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterIf_else_statment(JythonParser.If_else_statmentContext ctx) {
-
+        BlockScope blockScope = new BlockScope(Constants.ElseIf);
+        try {
+            scopes.peek().insertScope(blockScope);
+        } catch (SemanticException semanticException) {
+            System.out.println(semanticException);
+        }
+        scopes.push(blockScope);
     }
 
     /**
@@ -431,7 +449,7 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void exitIf_else_statment(JythonParser.If_else_statmentContext ctx) {
-
+        scopes.pop();
     }
 
     /**
@@ -461,7 +479,13 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterFor_statment(JythonParser.For_statmentContext ctx) {
-
+        BlockScope blockScope = new BlockScope(Constants.For);
+        try {
+            scopes.peek().insertScope(blockScope);
+        } catch (SemanticException semanticException) {
+            System.out.println(semanticException);
+        }
+        scopes.push(blockScope);
     }
 
     /**
@@ -471,7 +495,7 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void exitFor_statment(JythonParser.For_statmentContext ctx) {
-
+        scopes.pop();
     }
 
     /**

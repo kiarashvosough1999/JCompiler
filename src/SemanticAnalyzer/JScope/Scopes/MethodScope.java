@@ -9,6 +9,7 @@ import SemanticAnalyzer.ParameterModel;
 import SemanticAnalyzer.SemanticException;
 import SemanticAnalyzer.SymbolTable;
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class MethodScope implements ParameteredScope {
 
@@ -18,7 +19,7 @@ public class MethodScope implements ParameteredScope {
 
     private final String scopeName;
 
-    private final ArrayList<Scope> childScopes;
+    private final Stack<Scope> childScopes;
 
     private final String returnType;
 
@@ -29,7 +30,7 @@ public class MethodScope implements ParameteredScope {
         this.returnType = returnType == null ? "void" : returnType;
         this.scopeType = isConstructor ? ScopeType.constructor : ScopeType.method;
         this.scopeName = isConstructor ? scopeName + Constants.Constructor : scopeName;
-        this.childScopes = new ArrayList<>();
+        this.childScopes = new Stack<>();
         this.parameters = new ArrayList<>();
     }
 
@@ -114,7 +115,7 @@ public class MethodScope implements ParameteredScope {
     }
 
     @Override
-    public ArrayList<Scope> getAllChildScopes() {
+    public Stack<Scope> getAllChildScopes() {
         return this.childScopes;
     }
 
@@ -123,7 +124,7 @@ public class MethodScope implements ParameteredScope {
         try {
             Scope s = getScopeByName(scope.getScopeName());
         } catch (SemanticException exception) {
-            childScopes.add(scope);
+            childScopes.push(scope);
             return;
         }
         throw new SemanticException("Can not insert scope " + scope.getScopeName() + " because it is already added");

@@ -6,7 +6,7 @@ import SemanticAnalyzer.SemanticException;
 import SemanticAnalyzer.SymbolTable;
 import java.util.Stack;
 
-public class ProgramScope implements Scope {
+public class BlockScope extends Object implements Scope {
 
     private final SymbolTable symbolTable;
 
@@ -16,9 +16,9 @@ public class ProgramScope implements Scope {
 
     private final Stack<Scope> childScopes;
 
-    public ProgramScope(String scopeName) {
+    public BlockScope(String scopeName) {
         this.symbolTable = new SymbolTable();
-        this.scopeType = ScopeType.program;
+        this.scopeType = ScopeType.block;
         this.scopeName = scopeName;
         this.childScopes = new Stack<>();
     }
@@ -72,6 +72,7 @@ public class ProgramScope implements Scope {
         stringBuilder.append("----------");
         stringBuilder.append("\n");
         stringBuilder.append(getSymbolTable().toString());
+
         stringBuilder.append("\n");
         for (Scope scope: childScopes) {
             stringBuilder.append(scope.toString());

@@ -18,11 +18,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package Indentation;
+package ProgramPrinter.Indentation;
 
-public class ProgramIndentation extends BaseIndentation {
+public class StatementIndentation  extends BaseIndentation {
 
-    public ProgramIndentation() {
-        super(1, IndentationType.program);
+    public StatementIndentation() {
+        super(1, IndentationType.statement);
     }
 }

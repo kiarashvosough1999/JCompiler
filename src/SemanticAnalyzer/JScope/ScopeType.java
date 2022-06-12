@@ -3,16 +3,13 @@ package SemanticAnalyzer.JScope;
 public enum ScopeType {
 
     program("program"),
+
     classs("class"),
     method("method"),
+
     constructor("constructor"),
-    iff("if"),
-    elsif("elseif"),
-    elses("else"),
-    forr("for"),
-    whilee("while");
 
-
+    block("block");
 
     private final String name;
     ScopeType(String name) {

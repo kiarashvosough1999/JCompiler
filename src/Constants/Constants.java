@@ -38,4 +38,12 @@ public class Constants {
     public final static String Underline = "_";
 
     public final static String Key = " Key ";
+
+    public final static String If = " if ";
+
+    public final static String While = " while ";
+
+    public final static String For = " for ";
+
+    public final static String ElseIf = " else if ";
 }

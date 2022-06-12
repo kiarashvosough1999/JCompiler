@@ -5,7 +5,7 @@ import SemanticAnalyzer.JScope.Scope;
 import SemanticAnalyzer.JScope.ScopeType;
 import SemanticAnalyzer.SemanticException;
 import SemanticAnalyzer.SymbolTable;
-import java.util.ArrayList;
+import java.util.Stack;
 
 public class ClassScope implements Scope {
 
@@ -15,13 +15,13 @@ public class ClassScope implements Scope {
 
     private final String scopeName;
 
-    private final ArrayList<Scope> childScopes;
+    private final Stack<Scope> childScopes;
 
     public ClassScope(String scopeName) {
         this.symbolTable = new SymbolTable();
         this.scopeType = ScopeType.classs;
         this.scopeName = scopeName;
-        this.childScopes = new ArrayList<>();
+        this.childScopes = new Stack<>();
     }
 
     @Override
@@ -40,7 +40,7 @@ public class ClassScope implements Scope {
     }
 
     @Override
-    public ArrayList<Scope> getAllChildScopes() {
+    public Stack<Scope> getAllChildScopes() {
         return this.childScopes;
     }
 
@@ -49,7 +49,7 @@ public class ClassScope implements Scope {
         try {
             Scope s = getScopeByName(scope.getScopeName());
         } catch (SemanticException exception) {
-            childScopes.add(scope);
+            childScopes.push(scope);
             return;
         }
         throw new SemanticException("Can not insert scope " + scope.getScopeName() + " because it is already added");

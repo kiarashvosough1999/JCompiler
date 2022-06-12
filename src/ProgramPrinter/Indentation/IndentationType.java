@@ -18,13 +18,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package Indentation;
+package ProgramPrinter.Indentation;
 
-public interface Indentable {
+public enum IndentationType {
 
-    String indentationLiteral();
+    program("program"),
+    importt("import"),
+    classs("class"),
+    variable("variable"),
+    array("array"),
+    concstructor("concstructor"),
+    parameters("parameters"),
+    method("method"),
+    statement("statement")
+    ;
 
-    Integer getIndentationCount();
+    private final String name;
+    IndentationType(String name) {
+        this.name = name;
+    }
 
-    IndentationType getIndentationType();
+    public boolean equalsName(String otherName) {
+        return name.equals(otherName);
+    }
+
+    public String toString() {
+        return this.name;
+    }
 }

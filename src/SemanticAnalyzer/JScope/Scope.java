@@ -4,6 +4,7 @@ import SemanticAnalyzer.SemanticException;
 import SemanticAnalyzer.SymbolTable;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 public interface Scope {
 
@@ -13,7 +14,7 @@ public interface Scope {
 
     String getScopeName();
 
-    ArrayList<Scope> getAllChildScopes();
+    Stack<Scope> getAllChildScopes();
 
     void insertScope(Scope scope) throws SemanticException;
 
