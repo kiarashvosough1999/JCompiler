@@ -19,7 +19,7 @@
 // SOFTWARE.
 
 
-package Indentation;
+package ProgramPrinter.Indentation;
 
 public class MethodIndentation extends BaseIndentation {
 

@@ -34,7 +34,7 @@ arrayDec : arrayType = (TYPE | CLASSNAME) '['arraySize = INTEGER']' arrayVaribal
 
 methodDec : 'def' methodReturnType = (TYPE | CLASSNAME |'void') methodName = ID '(' methodParameters = parameter* ')''{' methodStatement = statement* '}';
 
-constructor : 'def' cosntructorType = (TYPE | CLASSNAME) '(' constructorParameters = parameter* ')''{' ( statement)* '}' ;
+constructor : 'def' cosntructorType = (TYPE | CLASSNAME) '(' constructorParameters = parameter* ')''{' (statement)* '}' ;
 
 parameter : varDec (',' varDec)* ;
 
