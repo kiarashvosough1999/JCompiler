@@ -1,5 +1,7 @@
 import Nothing
+
 import Nothing2
+
 class Human(Nothing, Nothing2){
     Nose nose
     Hand[2] hands
