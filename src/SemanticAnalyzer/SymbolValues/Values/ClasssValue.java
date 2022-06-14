@@ -1,12 +1,14 @@
 package SemanticAnalyzer.SymbolValues.Values;
 
 import Constants.Constants;
+import SemanticAnalyzer.Errors.ErrorProneNameType;
+import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SymbolValues.SymbolValue;
 import SemanticAnalyzer.SymbolValues.SymbolValueKind;
 
 import java.util.ArrayList;
 
-public class ClasssValue extends Object implements SymbolValue {
+public class ClasssValue extends Object implements SymbolValue, ErrorProneNameType {
 
     final private String name;
 
@@ -14,8 +16,14 @@ public class ClasssValue extends Object implements SymbolValue {
 
     final private ArrayList<String> classParents;
 
-    public ClasssValue(String name, ArrayList<String> classParents) {
+    private final PositionModel namePosition;
+
+    private final PositionModel typePosition;
+
+    public ClasssValue(String name, ArrayList<String> classParents, PositionModel namePosition, PositionModel typePosition) {
         this.name = name;
+        this.namePosition = namePosition;
+        this.typePosition = typePosition;
         this.kind = SymbolValueKind.classs;
         this.classParents = classParents;
     }
@@ -77,5 +85,15 @@ public class ClasssValue extends Object implements SymbolValue {
         }
         stringBuilder.append(Constants.RightParan);
         return stringBuilder.toString();
+    }
+
+    @Override
+    public PositionModel getNamePosition() {
+        return this.namePosition;
+    }
+
+    @Override
+    public PositionModel getTypePosition() {
+        return this.typePosition;
     }
 }

@@ -1,16 +1,22 @@
 package SemanticAnalyzer.SymbolValues.Values;
 
 import Constants.Constants;
+import SemanticAnalyzer.Errors.ErrorProneOnName;
+import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SymbolValues.SymbolValue;
 import SemanticAnalyzer.SymbolValues.SymbolValueKind;
 
-public class ImportValue extends Object implements SymbolValue {
+public class ImportValue extends Object implements SymbolValue, ErrorProneOnName {
 
     final private String name;
     final private SymbolValueKind kind;
 
-    public ImportValue(String name) {
+    private final PositionModel namePosition;
+
+
+    public ImportValue(String name, PositionModel namePosition) {
         this.name = name;
+        this.namePosition = namePosition;
         this.kind = SymbolValueKind.importt;
     }
 
@@ -60,5 +66,10 @@ public class ImportValue extends Object implements SymbolValue {
                 Constants.Colon +
                 this.name +
                 Constants.RightParan;
+    }
+
+    @Override
+    public PositionModel getNamePosition() {
+        return this.namePosition;
     }
 }

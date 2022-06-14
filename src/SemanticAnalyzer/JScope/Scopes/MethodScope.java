@@ -1,17 +1,19 @@
 package SemanticAnalyzer.JScope.Scopes;
 
 import Constants.Constants;
+import SemanticAnalyzer.Errors.ErrorProneNameType;
 import SemanticAnalyzer.Helper;
 import SemanticAnalyzer.JScope.ParameteredScope;
 import SemanticAnalyzer.JScope.Scope;
 import SemanticAnalyzer.JScope.ScopeType;
-import SemanticAnalyzer.ParameterModel;
+import SemanticAnalyzer.Models.ParameterModel;
+import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SemanticException;
 import SemanticAnalyzer.SymbolTable;
 import java.util.ArrayList;
 import java.util.Stack;
 
-public class MethodScope implements ParameteredScope {
+public class MethodScope implements ParameteredScope, ErrorProneNameType {
 
     private final SymbolTable symbolTable;
 
@@ -27,8 +29,19 @@ public class MethodScope implements ParameteredScope {
 
     private final Integer lineNumber;
 
-    public MethodScope(String scopeName, String returnType, Boolean isConstructor, Integer lineNumber) {
+    private final PositionModel namePosition;
+
+    private final PositionModel returnTypePosition;
+
+    public MethodScope(String scopeName,
+                       String returnType,
+                       Boolean isConstructor,
+                       Integer lineNumber,
+                       PositionModel namePosition,
+                       PositionModel returnTypePosition) {
         this.lineNumber = lineNumber;
+        this.namePosition = namePosition;
+        this.returnTypePosition = returnTypePosition;
         this.symbolTable = new SymbolTable();
         this.returnType = returnType == null ? "void" : returnType;
         this.scopeType = isConstructor ? ScopeType.constructor : ScopeType.method;
@@ -38,8 +51,8 @@ public class MethodScope implements ParameteredScope {
     }
 
     @Override
-    public void addParameters(String name, String type) {
-        parameters.add(new ParameterModel(name, type));
+    public void addParameters(String name, String type, PositionModel namePosition, PositionModel typePosition) {
+        parameters.add(new ParameterModel(name, type, namePosition, typePosition));
     }
 
     @Override
@@ -84,7 +97,7 @@ public class MethodScope implements ParameteredScope {
                 stringBuilder.append(Constants.LeftBracket);
                 stringBuilder.append(Constants.TYPE);
                 stringBuilder.append(Constants.Colon);
-                String returnType = this.parameters.get(i).getType();
+                String returnType = this.parameters.get(i).type();
                 stringBuilder.append(
                         Helper.isPrimitiveType(returnType) ? returnType : Constants.ClassTyped + Constants.Equal + returnType
                         );
@@ -164,5 +177,15 @@ public class MethodScope implements ParameteredScope {
             stringBuilder.append("\n");
         }
         return stringBuilder.toString();
+    }
+
+    @Override
+    public PositionModel getNamePosition() {
+        return this.namePosition;
+    }
+
+    @Override
+    public PositionModel getTypePosition() {
+        return this.returnTypePosition;
     }
 }

@@ -1,6 +1,7 @@
 package SemanticAnalyzer;
 
 import Constants.Constants;
+import SemanticAnalyzer.Errors.RedundantMethodDetector;
 import SemanticAnalyzer.JScope.ParameteredScope;
 import SemanticAnalyzer.JScope.Scope;
 import SemanticAnalyzer.JScope.ScopeType;
@@ -8,6 +9,7 @@ import SemanticAnalyzer.JScope.Scopes.BlockScope;
 import SemanticAnalyzer.JScope.Scopes.ClassScope;
 import SemanticAnalyzer.JScope.Scopes.MethodScope;
 import SemanticAnalyzer.JScope.Scopes.ProgramScope;
+import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SymbolValues.Values.*;
 import gen.JythonListener;
 import gen.JythonParser;
@@ -57,7 +59,13 @@ public class JythonSemanticAnalyzer implements JythonListener {
     @Override
     public void enterImportclass(JythonParser.ImportclassContext ctx) {
         System.out.println();
-        ImportValue importValue = new ImportValue(ctx.importName.getText());
+        ImportValue importValue = new ImportValue(
+                ctx.importName.getText(),
+                new PositionModel(
+                        ctx.importName.getLine(),
+                        ctx.importName.getCharPositionInLine()
+                )
+        );
         scopes.peek().getSymbolTable().insert(importValue);
     }
 
@@ -89,13 +97,26 @@ public class JythonSemanticAnalyzer implements JythonListener {
 
         ClasssValue classValue = new ClasssValue(
                 ctx.className.getText(),
-                stringArrayList
-                );
+                stringArrayList,
+                new PositionModel(
+                        ctx.className.getLine(),
+                        ctx.className.getCharPositionInLine()
+                ),
+                null
+        );
         scopes.peek().getSymbolTable().insert(classValue);
 
         // New Scope
 
-        ClassScope classScope = new ClassScope(ctx.className.getText(), ctx.start.getLine());
+        ClassScope classScope = new ClassScope(
+                ctx.className.getText(),
+                ctx.start.getLine(),
+                new PositionModel(
+                        ctx.start.getLine(),
+                        ctx.className.getCharPositionInLine()
+                )
+        );
+
         try {
             scopes.peek().insertScope(classScope);
         } catch (SemanticException semanticException) {
@@ -145,13 +166,29 @@ public class JythonSemanticAnalyzer implements JythonListener {
             if (Helper.isPrimitiveType(ctx.variableType.getText())) {
                 FieldValue classFieldValue = new FieldValue(
                         ctx.varibaleName.getText(),
-                        ctx.variableType.getText()
+                        ctx.variableType.getText(),
+                        new PositionModel(
+                                ctx.varibaleName.getLine(),
+                                ctx.varibaleName.getCharPositionInLine()
+                        ),
+                        new PositionModel(
+                                ctx.variableType.getLine(),
+                                ctx.variableType.getCharPositionInLine()
+                        )
                 );
                 scopes.peek().getSymbolTable().insert(classFieldValue);
             } else {
                 ClassFieldValue classFieldValue = new ClassFieldValue(
                         ctx.varibaleName.getText(),
-                        ctx.variableType.getText()
+                        ctx.variableType.getText(),
+                        new PositionModel(
+                                ctx.varibaleName.getLine(),
+                                ctx.varibaleName.getCharPositionInLine()
+                        ),
+                        new PositionModel(
+                                ctx.variableType.getLine(),
+                                ctx.variableType.getCharPositionInLine()
+                        )
                 );
                 scopes.peek().getSymbolTable().insert(classFieldValue);
             }
@@ -180,14 +217,30 @@ public class JythonSemanticAnalyzer implements JythonListener {
                 ArrayFieldValue classFieldValue = new ArrayFieldValue(
                         ctx.arrayVaribaleName.getText(),
                         ctx.arrayType.getText(),
-                        ctx.arraySize.getText()
+                        ctx.arraySize.getText(),
+                        new PositionModel(
+                                ctx.arrayVaribaleName.getLine(),
+                                ctx.arrayVaribaleName.getCharPositionInLine()
+                        ),
+                        new PositionModel(
+                                ctx.arrayType.getLine(),
+                                ctx.arrayType.getCharPositionInLine()
+                        )
                 );
                 scopes.peek().getSymbolTable().insert(classFieldValue);
             } else {
                 ClassArrayFieldValue classFieldValue = new ClassArrayFieldValue(
                         ctx.arrayVaribaleName.getText(),
                         ctx.arrayType.getText(),
-                        ctx.arraySize.getText()
+                        ctx.arraySize.getText(),
+                        new PositionModel(
+                                ctx.arrayVaribaleName.getLine(),
+                                ctx.arrayVaribaleName.getCharPositionInLine()
+                        ),
+                        new PositionModel(
+                                ctx.arrayType.getLine(),
+                                ctx.arrayType.getCharPositionInLine()
+                        )
                 );
                 scopes.peek().getSymbolTable().insert(classFieldValue);
             }
@@ -211,11 +264,27 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterMethodDec(JythonParser.MethodDecContext ctx) {
+
         MethodScope methodScope = new MethodScope(
                 ctx.methodName.getText(),
                 ctx.methodReturnType.getText(),
                 false,
-                ctx.start.getLine());
+                ctx.start.getLine(),
+                new PositionModel(
+                        ctx.start.getLine(),
+                        ctx.methodName.getCharPositionInLine()
+                ),
+                new PositionModel(
+                        ctx.start.getLine(),
+                        ctx.methodReturnType.getCharPositionInLine()
+                )
+        );
+
+        RedundantMethodDetector redundantMethodDetector = new RedundantMethodDetector(scopes);
+        if (redundantMethodDetector.isRedundantMethod(methodScope)) {
+            System.out.println(redundantMethodDetector.generateErrorMessage());
+        }
+
         try {
             scopes.peek().insertScope(methodScope);
         } catch (SemanticException semanticException) {
@@ -243,11 +312,21 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterConstructor(JythonParser.ConstructorContext ctx) {
+
         MethodScope methodScope = new MethodScope(
                 ctx.cosntructorType.getText(),
-                null,
+                ctx.cosntructorType.getText(),
                 true,
-                ctx.start.getLine());
+                ctx.start.getLine(),
+                new PositionModel(
+                        ctx.start.getLine(),
+                        ctx.CLASSNAME().getSymbol().getCharPositionInLine()
+                ),
+                new PositionModel(
+                        ctx.start.getLine(),
+                        ctx.CLASSNAME().getSymbol().getCharPositionInLine()
+                )
+        );
         try {
             scopes.peek().insertScope(methodScope);
         } catch (SemanticException semanticException) {
@@ -280,8 +359,16 @@ public class JythonSemanticAnalyzer implements JythonListener {
             for (JythonParser.VarDecContext context :ctx.varDec()) {
                 peek.addParameters(
                         context.varibaleName.getText(),
-                        context.variableType.getText()
-                        );
+                        context.variableType.getText(),
+                        new PositionModel(
+                                context.start.getLine(),
+                                context.varibaleName.getCharPositionInLine()
+                        ),
+                        new PositionModel(
+                                context.start.getLine(),
+                                context.variableType.getCharPositionInLine()
+                        )
+                );
             }
         }
     }
