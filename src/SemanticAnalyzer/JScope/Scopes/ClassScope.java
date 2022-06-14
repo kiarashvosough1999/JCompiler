@@ -1,13 +1,15 @@
 package SemanticAnalyzer.JScope.Scopes;
 
+import SemanticAnalyzer.Errors.ErrorProneOnName;
 import SemanticAnalyzer.JScope.ParameteredScope;
 import SemanticAnalyzer.JScope.Scope;
 import SemanticAnalyzer.JScope.ScopeType;
+import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SemanticException;
 import SemanticAnalyzer.SymbolTable;
 import java.util.Stack;
 
-public class ClassScope implements Scope {
+public class ClassScope implements Scope, ErrorProneOnName {
 
     private final SymbolTable symbolTable;
 
@@ -19,8 +21,12 @@ public class ClassScope implements Scope {
 
     private final Integer lineNumber;
 
-    public ClassScope(String scopeName, Integer lineNumber) {
+    private final PositionModel namePosition;
+
+
+    public ClassScope(String scopeName, Integer lineNumber, PositionModel namePosition) {
         this.lineNumber = lineNumber;
+        this.namePosition = namePosition;
         this.symbolTable = new SymbolTable();
         this.scopeType = ScopeType.classs;
         this.scopeName = scopeName;
@@ -98,5 +104,10 @@ public class ClassScope implements Scope {
             stringBuilder.append("\n");
         }
         return stringBuilder.toString();
+    }
+
+    @Override
+    public PositionModel getNamePosition() {
+        return this.namePosition;
     }
 }

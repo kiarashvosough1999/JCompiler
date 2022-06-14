@@ -1,11 +1,13 @@
 package SemanticAnalyzer.SymbolValues.Values;
 
 import Constants.Constants;
+import SemanticAnalyzer.Errors.ErrorProneNameType;
 import SemanticAnalyzer.Helper;
+import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SymbolValues.SymbolValue;
 import SemanticAnalyzer.SymbolValues.SymbolValueKind;
 
-public class FieldValue implements SymbolValue {
+public class FieldValue implements SymbolValue, ErrorProneNameType {
 
     final private String name;
 
@@ -13,9 +15,15 @@ public class FieldValue implements SymbolValue {
 
     final private SymbolValueKind kind;
 
-    public FieldValue(String name, String type) {
+    private final PositionModel namePosition;
+
+    private final PositionModel typePosition;
+
+    public FieldValue(String name, String type, PositionModel namePosition, PositionModel typePosition) {
         this.type = type;
         this.name = name;
+        this.namePosition = namePosition;
+        this.typePosition = typePosition;
         this.kind = SymbolValueKind.field;
     }
 
@@ -84,5 +92,15 @@ public class FieldValue implements SymbolValue {
         stringBuilder.append(Constants.RightBracket);
         stringBuilder.append(Constants.RightParan);
         return stringBuilder.toString();
+    }
+
+    @Override
+    public PositionModel getNamePosition() {
+        return this.namePosition;
+    }
+
+    @Override
+    public PositionModel getTypePosition() {
+        return this.typePosition;
     }
 }

@@ -29,4 +29,6 @@ class Human(Nothing, Nothing2){
     }
     def void main(){
     }
+    def void main(){
+    }
 }
