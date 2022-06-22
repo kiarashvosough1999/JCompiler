@@ -15,19 +15,19 @@ class Human(Nothing, Nothing2){
         Voice voice
         return voice
     }
+
     def void eat(Food food, int c){
         calories += c
         newFood = food
+        bool isHungry
         while(true){
             Food newFood = Food()
             eat(newFood)
             isHungry = checkIsHungry()
             if (true) {
-               Kia kiki
+               Nose nose
             }
         }
-    }
-    def void main(){
     }
     def void main(){
     }

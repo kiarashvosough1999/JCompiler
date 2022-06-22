@@ -5,6 +5,7 @@ public enum ScopeType {
     program("program"),
 
     classs("class"),
+
     method("method"),
 
     constructor("constructor"),

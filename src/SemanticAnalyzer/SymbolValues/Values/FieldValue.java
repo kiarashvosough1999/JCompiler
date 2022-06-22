@@ -1,13 +1,16 @@
 package SemanticAnalyzer.SymbolValues.Values;
 
 import Constants.Constants;
-import SemanticAnalyzer.Errors.ErrorProneNameType;
+import SemanticAnalyzer.Errors.ErrorProneEntity;
+import SemanticAnalyzer.Models.ErrorProneEntityMeta;
 import SemanticAnalyzer.Helper;
+import SemanticAnalyzer.Models.FieldErrorMeta;
 import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SymbolValues.SymbolValue;
 import SemanticAnalyzer.SymbolValues.SymbolValueKind;
+import SemanticAnalyzer.SymbolValues.SymbolValueOwner;
 
-public class FieldValue implements SymbolValue, ErrorProneNameType {
+public class FieldValue implements SymbolValue, ErrorProneEntity {
 
     final private String name;
 
@@ -19,17 +22,30 @@ public class FieldValue implements SymbolValue, ErrorProneNameType {
 
     private final PositionModel typePosition;
 
-    public FieldValue(String name, String type, PositionModel namePosition, PositionModel typePosition) {
+    private final SymbolValueOwner owner;
+
+    public FieldValue(String name, String type, PositionModel namePosition, PositionModel typePosition, SymbolValueOwner owner) {
         this.type = type;
         this.name = name;
         this.namePosition = namePosition;
         this.typePosition = typePosition;
+        this.owner = owner;
         this.kind = SymbolValueKind.field;
+    }
+
+    @Override
+    public SymbolValueOwner getOwner() {
+        return owner;
     }
 
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getKeyStarter() {
+        return Constants.Field;
     }
 
     @Override
@@ -49,7 +65,7 @@ public class FieldValue implements SymbolValue, ErrorProneNameType {
 
     @Override
     public String getType() {
-        return null;
+        return type;
     }
 
     @Override
@@ -68,6 +84,7 @@ public class FieldValue implements SymbolValue, ErrorProneNameType {
         stringBuilder.append(Constants.VerticalLine);
         stringBuilder.append(Constants.VALUE);
         stringBuilder.append(Constants.Colon);
+        stringBuilder.append(this.owner);
         stringBuilder.append(this.kind);
         stringBuilder.append(Constants.LeftParan);
         stringBuilder.append(Constants.Name);
@@ -95,12 +112,19 @@ public class FieldValue implements SymbolValue, ErrorProneNameType {
     }
 
     @Override
-    public PositionModel getNamePosition() {
-        return this.namePosition;
+    public Boolean isArray() {
+        return false;
     }
 
     @Override
-    public PositionModel getTypePosition() {
-        return this.typePosition;
+    public Object getErrorProneEntityMeta() {
+        return new FieldErrorMeta(
+                this.name,
+                this.type,
+                false,
+                null,
+                this.namePosition,
+                this.typePosition
+        );
     }
 }

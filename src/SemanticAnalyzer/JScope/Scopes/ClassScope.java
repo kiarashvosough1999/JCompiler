@@ -1,6 +1,7 @@
 package SemanticAnalyzer.JScope.Scopes;
 
-import SemanticAnalyzer.Errors.ErrorProneOnName;
+import SemanticAnalyzer.Errors.ErrorProneEntity;
+import SemanticAnalyzer.Models.ErrorProneEntityMeta;
 import SemanticAnalyzer.JScope.ParameteredScope;
 import SemanticAnalyzer.JScope.Scope;
 import SemanticAnalyzer.JScope.ScopeType;
@@ -9,7 +10,7 @@ import SemanticAnalyzer.SemanticException;
 import SemanticAnalyzer.SymbolTable;
 import java.util.Stack;
 
-public class ClassScope implements Scope, ErrorProneOnName {
+public class ClassScope implements Scope, ErrorProneEntity {
 
     private final SymbolTable symbolTable;
 
@@ -107,7 +108,10 @@ public class ClassScope implements Scope, ErrorProneOnName {
     }
 
     @Override
-    public PositionModel getNamePosition() {
-        return this.namePosition;
+    public Object getErrorProneEntityMeta() {
+        return new ErrorProneEntityMeta(
+                this.namePosition,
+                null
+        );
     }
 }

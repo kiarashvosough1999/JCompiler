@@ -1,14 +1,15 @@
 package SemanticAnalyzer.SymbolValues.Values;
 
 import Constants.Constants;
-import SemanticAnalyzer.Errors.ErrorProneNameType;
+import SemanticAnalyzer.Errors.ErrorProneEntity;
+import SemanticAnalyzer.Models.ErrorProneEntityMeta;
 import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SymbolValues.SymbolValue;
 import SemanticAnalyzer.SymbolValues.SymbolValueKind;
-
+import SemanticAnalyzer.SymbolValues.SymbolValueOwner;
 import java.util.ArrayList;
 
-public class ClasssValue extends Object implements SymbolValue, ErrorProneNameType {
+public class ClasssValue extends Object implements SymbolValue, ErrorProneEntity {
 
     final private String name;
 
@@ -20,17 +21,30 @@ public class ClasssValue extends Object implements SymbolValue, ErrorProneNameTy
 
     private final PositionModel typePosition;
 
-    public ClasssValue(String name, ArrayList<String> classParents, PositionModel namePosition, PositionModel typePosition) {
+    private final SymbolValueOwner owner;
+
+    public ClasssValue(String name, ArrayList<String> classParents, PositionModel namePosition, PositionModel typePosition, SymbolValueOwner owner) {
         this.name = name;
         this.namePosition = namePosition;
         this.typePosition = typePosition;
+        this.owner = owner;
         this.kind = SymbolValueKind.classs;
         this.classParents = classParents;
     }
 
     @Override
+    public SymbolValueOwner getOwner() {
+        return owner;
+    }
+
+    @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getKeyStarter() {
+        return SymbolValueKind.classs.toString();
     }
 
     @Override
@@ -64,11 +78,17 @@ public class ClasssValue extends Object implements SymbolValue, ErrorProneNameTy
     }
 
     @Override
+    public Boolean isArray() {
+        return false;
+    }
+
+    @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(Constants.VerticalLine);
         stringBuilder.append(Constants.VALUE);
         stringBuilder.append(Constants.Colon);
+        stringBuilder.append(this.owner);
         stringBuilder.append(this.kind);
         stringBuilder.append(Constants.LeftParan);
         stringBuilder.append(Constants.Name);
@@ -88,12 +108,10 @@ public class ClasssValue extends Object implements SymbolValue, ErrorProneNameTy
     }
 
     @Override
-    public PositionModel getNamePosition() {
-        return this.namePosition;
-    }
-
-    @Override
-    public PositionModel getTypePosition() {
-        return this.typePosition;
+    public Object getErrorProneEntityMeta() {
+        return new ErrorProneEntityMeta(
+                this.namePosition,
+                this.typePosition
+        );
     }
 }

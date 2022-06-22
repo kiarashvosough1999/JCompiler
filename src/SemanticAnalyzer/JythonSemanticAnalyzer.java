@@ -1,7 +1,9 @@
 package SemanticAnalyzer;
 
 import Constants.Constants;
-import SemanticAnalyzer.Errors.RedundantMethodDetector;
+import SemanticAnalyzer.Errors.RedundantMethodStrategy;
+import SemanticAnalyzer.Errors.RedundantPropertyStrategy;
+import SemanticAnalyzer.Errors.ValidationResultModel;
 import SemanticAnalyzer.JScope.ParameteredScope;
 import SemanticAnalyzer.JScope.Scope;
 import SemanticAnalyzer.JScope.ScopeType;
@@ -10,6 +12,7 @@ import SemanticAnalyzer.JScope.Scopes.ClassScope;
 import SemanticAnalyzer.JScope.Scopes.MethodScope;
 import SemanticAnalyzer.JScope.Scopes.ProgramScope;
 import SemanticAnalyzer.Models.PositionModel;
+import SemanticAnalyzer.SymbolValues.SymbolValueOwner;
 import SemanticAnalyzer.SymbolValues.Values.*;
 import gen.JythonListener;
 import gen.JythonParser;
@@ -24,6 +27,10 @@ public class JythonSemanticAnalyzer implements JythonListener {
     private final ArrayList<Scope> topScopes = new ArrayList<>();
 
     private final Stack<Scope> scopes = new Stack<>();
+
+    private final Stack<ValidationResultModel> errorStack = new Stack<>();
+
+    private Boolean isOnParameters = false;
 
     /**
      * Enter a parse tree produced by {@link JythonParser#program}.
@@ -47,6 +54,9 @@ public class JythonSemanticAnalyzer implements JythonListener {
         for (Scope scope : scopes) {
             System.out.println(scope);
         }
+        for (ValidationResultModel resultModel : errorStack) {
+            System.out.println(resultModel);
+        }
         scopes.pop();
         System.out.println("lines" + Integer.valueOf(ctx.start.getLine()).toString());
     }
@@ -64,7 +74,8 @@ public class JythonSemanticAnalyzer implements JythonListener {
                 new PositionModel(
                         ctx.importName.getLine(),
                         ctx.importName.getCharPositionInLine()
-                )
+                ),
+                SymbolValueOwner.from(scopes.peek().getScopeType())
         );
         scopes.peek().getSymbolTable().insert(importValue);
     }
@@ -102,8 +113,8 @@ public class JythonSemanticAnalyzer implements JythonListener {
                         ctx.className.getLine(),
                         ctx.className.getCharPositionInLine()
                 ),
-                null
-        );
+                null,
+                SymbolValueOwner.from(scopes.peek().getScopeType()));
         scopes.peek().getSymbolTable().insert(classValue);
 
         // New Scope
@@ -162,36 +173,35 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterVarDec(JythonParser.VarDecContext ctx) {
-        if (scopes.peek().getScopeType() != ScopeType.classs) {
-            if (Helper.isPrimitiveType(ctx.variableType.getText())) {
-                FieldValue classFieldValue = new FieldValue(
-                        ctx.varibaleName.getText(),
-                        ctx.variableType.getText(),
-                        new PositionModel(
-                                ctx.varibaleName.getLine(),
-                                ctx.varibaleName.getCharPositionInLine()
-                        ),
-                        new PositionModel(
-                                ctx.variableType.getLine(),
-                                ctx.variableType.getCharPositionInLine()
-                        )
-                );
-                scopes.peek().getSymbolTable().insert(classFieldValue);
+        if (isOnParameters) { return; }
+
+        FieldValue fieldValue = new FieldValue(
+                ctx.varibaleName.getText(),
+                ctx.variableType.getText(),
+                new PositionModel(
+                        ctx.varibaleName.getLine(),
+                        ctx.varibaleName.getCharPositionInLine()
+                ),
+                new PositionModel(
+                        ctx.variableType.getLine(),
+                        ctx.variableType.getCharPositionInLine()
+                ),
+                SymbolValueOwner.from(scopes.peek().getScopeType())
+        );
+
+        RedundantPropertyStrategy redundantPropertyStrategy = new RedundantPropertyStrategy(
+                this.scopes
+        );
+
+        try {
+            ValidationResultModel validationResultModel = redundantPropertyStrategy.checkValidity(fieldValue);
+            if (validationResultModel.isValid()) {
+                scopes.peek().getSymbolTable().insert(fieldValue);
             } else {
-                ClassFieldValue classFieldValue = new ClassFieldValue(
-                        ctx.varibaleName.getText(),
-                        ctx.variableType.getText(),
-                        new PositionModel(
-                                ctx.varibaleName.getLine(),
-                                ctx.varibaleName.getCharPositionInLine()
-                        ),
-                        new PositionModel(
-                                ctx.variableType.getLine(),
-                                ctx.variableType.getCharPositionInLine()
-                        )
-                );
-                scopes.peek().getSymbolTable().insert(classFieldValue);
+                errorStack.push(validationResultModel);
             }
+        } catch (Exception exception) {
+            System.out.println(exception);
         }
     }
 
@@ -212,39 +222,22 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterArrayDec(JythonParser.ArrayDecContext ctx) {
-        if (scopes.peek().getScopeType() != ScopeType.classs) {
-            if (Helper.isPrimitiveType(ctx.arrayType.getText())) {
-                ArrayFieldValue classFieldValue = new ArrayFieldValue(
-                        ctx.arrayVaribaleName.getText(),
-                        ctx.arrayType.getText(),
-                        ctx.arraySize.getText(),
-                        new PositionModel(
-                                ctx.arrayVaribaleName.getLine(),
-                                ctx.arrayVaribaleName.getCharPositionInLine()
-                        ),
-                        new PositionModel(
-                                ctx.arrayType.getLine(),
-                                ctx.arrayType.getCharPositionInLine()
-                        )
-                );
-                scopes.peek().getSymbolTable().insert(classFieldValue);
-            } else {
-                ClassArrayFieldValue classFieldValue = new ClassArrayFieldValue(
-                        ctx.arrayVaribaleName.getText(),
-                        ctx.arrayType.getText(),
-                        ctx.arraySize.getText(),
-                        new PositionModel(
-                                ctx.arrayVaribaleName.getLine(),
-                                ctx.arrayVaribaleName.getCharPositionInLine()
-                        ),
-                        new PositionModel(
-                                ctx.arrayType.getLine(),
-                                ctx.arrayType.getCharPositionInLine()
-                        )
-                );
-                scopes.peek().getSymbolTable().insert(classFieldValue);
-            }
-        }
+        if (isOnParameters) { return; }
+        ArrayFieldValue fieldValue = new ArrayFieldValue(
+                ctx.arrayVaribaleName.getText(),
+                ctx.arrayType.getText(),
+                ctx.arraySize.getText(),
+                new PositionModel(
+                        ctx.arrayVaribaleName.getLine(),
+                        ctx.arrayVaribaleName.getCharPositionInLine()
+                ),
+                new PositionModel(
+                        ctx.arrayType.getLine(),
+                        ctx.arrayType.getCharPositionInLine()
+                ),
+                SymbolValueOwner.from(scopes.peek().getScopeType())
+        );
+        scopes.peek().getSymbolTable().insert(fieldValue);
     }
 
     /**
@@ -264,7 +257,6 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterMethodDec(JythonParser.MethodDecContext ctx) {
-
         MethodScope methodScope = new MethodScope(
                 ctx.methodName.getText(),
                 ctx.methodReturnType.getText(),
@@ -280,17 +272,24 @@ public class JythonSemanticAnalyzer implements JythonListener {
                 )
         );
 
-        RedundantMethodDetector redundantMethodDetector = new RedundantMethodDetector(scopes);
-        if (redundantMethodDetector.isRedundantMethod(methodScope)) {
-            System.out.println(redundantMethodDetector.generateErrorMessage());
-        }
+        RedundantMethodStrategy strategy = new RedundantMethodStrategy(
+                this.scopes,
+                methodScope
+        );
 
         try {
-            scopes.peek().insertScope(methodScope);
-        } catch (SemanticException semanticException) {
-            System.out.println(semanticException);
+            ValidationResultModel res = strategy.checkValidity(methodScope);
+
+            if (res.isValid()) {
+                scopes.peek().insertScope(methodScope);
+                scopes.push(methodScope);
+            } else {
+                errorStack.push(res);
+            }
+
+        } catch (Exception exception) {
+            System.out.println(exception);
         }
-        scopes.push(methodScope);
     }
 
     /**
@@ -354,6 +353,7 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterParameter(JythonParser.ParameterContext ctx) {
+        isOnParameters = true;
         ParameteredScope peek = (ParameteredScope)scopes.peek();
         if (peek != null){
             for (JythonParser.VarDecContext context :ctx.varDec()) {
@@ -380,7 +380,7 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void exitParameter(JythonParser.ParameterContext ctx) {
-
+        isOnParameters = false;
     }
 
     /**

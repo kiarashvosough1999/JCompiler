@@ -1,23 +1,38 @@
 package SemanticAnalyzer.SymbolValues.Values;
 
 import Constants.Constants;
-import SemanticAnalyzer.Errors.ErrorProneOnName;
+import SemanticAnalyzer.Errors.ErrorProneEntity;
+import SemanticAnalyzer.Models.ErrorProneEntityMeta;
 import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SymbolValues.SymbolValue;
 import SemanticAnalyzer.SymbolValues.SymbolValueKind;
+import SemanticAnalyzer.SymbolValues.SymbolValueOwner;
 
-public class ImportValue extends Object implements SymbolValue, ErrorProneOnName {
+public class ImportValue extends Object implements SymbolValue, ErrorProneEntity {
 
     final private String name;
+
     final private SymbolValueKind kind;
 
     private final PositionModel namePosition;
 
+    private final SymbolValueOwner owner;
 
-    public ImportValue(String name, PositionModel namePosition) {
+    public ImportValue(String name, PositionModel namePosition, SymbolValueOwner owner) {
         this.name = name;
         this.namePosition = namePosition;
+        this.owner = owner;
         this.kind = SymbolValueKind.importt;
+    }
+
+    @Override
+    public SymbolValueOwner getOwner() {
+        return owner;
+    }
+
+    @Override
+    public String getKeyStarter() {
+        return SymbolValueKind.importt.toString();
     }
 
     @Override
@@ -69,7 +84,14 @@ public class ImportValue extends Object implements SymbolValue, ErrorProneOnName
     }
 
     @Override
-    public PositionModel getNamePosition() {
-        return this.namePosition;
+    public Boolean isArray() {
+        return false;
+    }
+    @Override
+    public Object getErrorProneEntityMeta() {
+        return new ErrorProneEntityMeta(
+                this.namePosition,
+                null
+        );
     }
 }
