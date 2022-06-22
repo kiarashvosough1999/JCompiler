@@ -1,7 +1,8 @@
 package SemanticAnalyzer.JScope.Scopes;
 
 import Constants.Constants;
-import SemanticAnalyzer.Errors.ErrorProneNameType;
+import SemanticAnalyzer.Errors.ErrorProneEntity;
+import SemanticAnalyzer.Models.MethodErrorMeta;
 import SemanticAnalyzer.Helper;
 import SemanticAnalyzer.JScope.ParameteredScope;
 import SemanticAnalyzer.JScope.Scope;
@@ -13,7 +14,7 @@ import SemanticAnalyzer.SymbolTable;
 import java.util.ArrayList;
 import java.util.Stack;
 
-public class MethodScope implements ParameteredScope, ErrorProneNameType {
+public class MethodScope implements ParameteredScope, ErrorProneEntity {
 
     private final SymbolTable symbolTable;
 
@@ -48,6 +49,10 @@ public class MethodScope implements ParameteredScope, ErrorProneNameType {
         this.scopeName = isConstructor ? scopeName + Constants.Constructor : scopeName;
         this.childScopes = new Stack<>();
         this.parameters = new ArrayList<>();
+    }
+
+    public String getReturnType() {
+        return returnType;
     }
 
     @Override
@@ -180,12 +185,13 @@ public class MethodScope implements ParameteredScope, ErrorProneNameType {
     }
 
     @Override
-    public PositionModel getNamePosition() {
-        return this.namePosition;
-    }
-
-    @Override
-    public PositionModel getTypePosition() {
-        return this.returnTypePosition;
+    public Object getErrorProneEntityMeta() {
+        return new MethodErrorMeta(
+                this.scopeName,
+                this.returnType,
+                this.parameters,
+                this.namePosition,
+                this.returnTypePosition
+        );
     }
 }

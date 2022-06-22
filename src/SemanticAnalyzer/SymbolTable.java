@@ -14,9 +14,12 @@ public class SymbolTable {
     }
 
     public void insert(SymbolValue value) {
-        this.table.put(value.getKind().toString() + "_" + value.getName(), value);
+        this.table.put(value.getName(), value);
     }
 
+    public SymbolValue getSymbolValueFor(String key) {
+        return table.get(key);
+    }
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

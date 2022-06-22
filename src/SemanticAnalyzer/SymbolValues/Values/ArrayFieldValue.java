@@ -1,13 +1,15 @@
 package SemanticAnalyzer.SymbolValues.Values;
 
 import Constants.Constants;
-import SemanticAnalyzer.Errors.ErrorProneNameType;
+import SemanticAnalyzer.Errors.ErrorProneEntity;
 import SemanticAnalyzer.Helper;
+import SemanticAnalyzer.Models.FieldErrorMeta;
 import SemanticAnalyzer.Models.PositionModel;
-import SemanticAnalyzer.SymbolValues.SymbolValue;
+import SemanticAnalyzer.SymbolValues.ArraySymbolValue;
 import SemanticAnalyzer.SymbolValues.SymbolValueKind;
+import SemanticAnalyzer.SymbolValues.SymbolValueOwner;
 
-public class ArrayFieldValue implements SymbolValue, ErrorProneNameType {
+public class ArrayFieldValue implements ArraySymbolValue, ErrorProneEntity {
 
     final private String arraySize;
 
@@ -21,13 +23,26 @@ public class ArrayFieldValue implements SymbolValue, ErrorProneNameType {
 
     private final PositionModel typePosition;
 
-    public ArrayFieldValue(String name, String type, String arraySize, PositionModel namePosition, PositionModel typePosition) {
+    private final SymbolValueOwner owner;
+
+    public ArrayFieldValue(String name, String type, String arraySize, PositionModel namePosition, PositionModel typePosition, SymbolValueOwner owner) {
         this.type = type;
         this.name = name;
         this.namePosition = namePosition;
         this.typePosition = typePosition;
+        this.owner = owner;
         this.kind = SymbolValueKind.arrayField;
         this.arraySize = arraySize;
+    }
+
+    @Override
+    public SymbolValueOwner getOwner() {
+        return owner;
+    }
+
+    @Override
+    public String getKeyStarter() {
+        return Constants.Field;
     }
 
     @Override
@@ -73,6 +88,7 @@ public class ArrayFieldValue implements SymbolValue, ErrorProneNameType {
         stringBuilder.append(Constants.VerticalLine);
         stringBuilder.append(Constants.VALUE);
         stringBuilder.append(Constants.Colon);
+        stringBuilder.append(this.owner);
         stringBuilder.append(this.kind);
         stringBuilder.append(Constants.LeftParan);
         stringBuilder.append(Constants.Name);
@@ -100,12 +116,24 @@ public class ArrayFieldValue implements SymbolValue, ErrorProneNameType {
     }
 
     @Override
-    public PositionModel getNamePosition() {
-        return this.namePosition;
+    public Boolean isArray() {
+        return true;
     }
 
     @Override
-    public PositionModel getTypePosition() {
-        return this.typePosition;
+    public Object getErrorProneEntityMeta() {
+        return new FieldErrorMeta(
+                this.name,
+                this.type,
+                true,
+                this.arraySize,
+                this.namePosition,
+                this.typePosition
+        );
+    }
+
+    @Override
+    public String getArraySize() {
+        return arraySize;
     }
 }

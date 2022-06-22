@@ -48,4 +48,6 @@ public class Constants {
     public final static String For = " for ";
 
     public final static String ElseIf = " else if ";
+
+    public final static String Field = "Field";
 }

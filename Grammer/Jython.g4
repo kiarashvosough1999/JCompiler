@@ -40,6 +40,8 @@ parameter : varDec (',' varDec)* ;
 
 statement : varDec | assignment | print_statment | method_call | return_statment |if_statment | while_statment | if_else_statment | for_statment;
 
+// usages
+
 return_statment : 'return' exp ;
 
 condition_list : condition (('or'|'and') condition)* ;
