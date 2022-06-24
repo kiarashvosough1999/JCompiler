@@ -1,8 +1,7 @@
 package SemanticAnalyzer.SymbolValues.Values;
 
 import Constants.Constants;
-import SemanticAnalyzer.Errors.ErrorProneEntity;
-import SemanticAnalyzer.Models.ErrorProneEntityMeta;
+import SemanticAnalyzer.Validators.ErrorProneEntity;
 import SemanticAnalyzer.Helper;
 import SemanticAnalyzer.Models.FieldErrorMeta;
 import SemanticAnalyzer.Models.PositionModel;

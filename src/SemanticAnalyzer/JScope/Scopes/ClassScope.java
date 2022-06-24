@@ -1,6 +1,9 @@
 package SemanticAnalyzer.JScope.Scopes;
 
-import SemanticAnalyzer.Errors.ErrorProneEntity;
+import SemanticAnalyzer.Models.ClassErrorMeta;
+import SemanticAnalyzer.Models.ParentClassModel;
+import SemanticAnalyzer.SymbolExpressions.SymbolExpression;
+import SemanticAnalyzer.Validators.ErrorProneEntity;
 import SemanticAnalyzer.Models.ErrorProneEntityMeta;
 import SemanticAnalyzer.JScope.ParameteredScope;
 import SemanticAnalyzer.JScope.Scope;
@@ -8,6 +11,9 @@ import SemanticAnalyzer.JScope.ScopeType;
 import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SemanticException;
 import SemanticAnalyzer.SymbolTable;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 public class ClassScope implements Scope, ErrorProneEntity {
@@ -18,25 +24,36 @@ public class ClassScope implements Scope, ErrorProneEntity {
 
     private final String scopeName;
 
+    final private List<ParentClassModel> classParents;
+
     private final Stack<Scope> childScopes;
+
+    private final List<SymbolExpression> symbolExpressionList;
 
     private final Integer lineNumber;
 
     private final PositionModel namePosition;
 
 
-    public ClassScope(String scopeName, Integer lineNumber, PositionModel namePosition) {
+    public ClassScope(String scopeName,List<ParentClassModel> classParents,  Integer lineNumber, PositionModel namePosition) {
         this.lineNumber = lineNumber;
         this.namePosition = namePosition;
+        this.classParents = classParents;
         this.symbolTable = new SymbolTable();
         this.scopeType = ScopeType.classs;
         this.scopeName = scopeName;
         this.childScopes = new Stack<>();
+        this.symbolExpressionList = new ArrayList<>();
     }
 
     @Override
     public SymbolTable getSymbolTable() {
         return this.symbolTable;
+    }
+
+    @Override
+    public List<SymbolExpression> getSymbolExpressions() {
+        return this.symbolExpressionList;
     }
 
     @Override
@@ -63,6 +80,11 @@ public class ClassScope implements Scope, ErrorProneEntity {
             return;
         }
         throw new SemanticException("Can not insert scope " + scope.getScopeName() + " because it is already added");
+    }
+
+    @Override
+    public void insertSymbolExpression(SymbolExpression symbolExpression) throws SemanticException {
+        symbolExpressionList.add(symbolExpression);
     }
 
     @Override
@@ -109,9 +131,10 @@ public class ClassScope implements Scope, ErrorProneEntity {
 
     @Override
     public Object getErrorProneEntityMeta() {
-        return new ErrorProneEntityMeta(
+        return new ClassErrorMeta(
+                this.scopeName,
                 this.namePosition,
-                null
+                this.classParents
         );
     }
 }

@@ -135,6 +135,13 @@ public class JythonBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitClass_instance(JythonParser.Class_instanceContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitFor_statment(JythonParser.For_statmentContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}

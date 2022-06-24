@@ -3,7 +3,11 @@ package SemanticAnalyzer.JScope.Scopes;
 import SemanticAnalyzer.JScope.Scope;
 import SemanticAnalyzer.JScope.ScopeType;
 import SemanticAnalyzer.SemanticException;
+import SemanticAnalyzer.SymbolExpressions.SymbolExpression;
 import SemanticAnalyzer.SymbolTable;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 public class ProgramScope implements Scope {
@@ -16,6 +20,8 @@ public class ProgramScope implements Scope {
 
     private final Stack<Scope> childScopes;
 
+    private final List<SymbolExpression> symbolExpressionList;
+
     private final Integer lineNumber;
 
     public ProgramScope(String scopeName, Integer lineNumber) {
@@ -24,6 +30,7 @@ public class ProgramScope implements Scope {
         this.scopeType = ScopeType.program;
         this.scopeName = scopeName;
         this.childScopes = new Stack<>();
+        this.symbolExpressionList = new ArrayList<>();
     }
 
     @Override
@@ -55,6 +62,16 @@ public class ProgramScope implements Scope {
             return;
         }
         throw new SemanticException("Can not insert scope " + scope.getScopeName() + " because it is already added");
+    }
+
+    @Override
+    public void insertSymbolExpression(SymbolExpression symbolExpression) throws SemanticException {
+        symbolExpressionList.add(symbolExpression);
+    }
+
+    @Override
+    public List<SymbolExpression> getSymbolExpressions() {
+        return this.symbolExpressionList;
     }
 
     @Override

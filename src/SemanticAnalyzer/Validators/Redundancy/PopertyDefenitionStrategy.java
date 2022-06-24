@@ -1,9 +1,13 @@
-package SemanticAnalyzer.Errors;
+package SemanticAnalyzer.Validators.Redundancy;
 
 import SemanticAnalyzer.JScope.Scope;
+import SemanticAnalyzer.Validators.ErrorProneEntity;
+import SemanticAnalyzer.Validators.ValidationResultModel;
+import SemanticAnalyzer.Validators.ValidationStrategy;
+
 import java.util.List;
 
-public class PopertyDefenitionStrategy implements ErrorStrategy {
+public class PopertyDefenitionStrategy implements ValidationStrategy {
 
     private final List<Scope> scopes;
 

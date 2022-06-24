@@ -1,13 +1,17 @@
-package SemanticAnalyzer.JScope.Scopes;
+package SemanticAnalyzer.JScope.Scopes.Block;
 
 import SemanticAnalyzer.JScope.Scope;
 import SemanticAnalyzer.JScope.ScopeType;
+import SemanticAnalyzer.Models.ConditionPack;
 import SemanticAnalyzer.SemanticException;
+import SemanticAnalyzer.SymbolExpressions.SymbolExpression;
 import SemanticAnalyzer.SymbolTable;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
-public class BlockScope extends Object implements Scope {
-
+public class IfScope implements Scope {
     private final SymbolTable symbolTable;
 
     private final ScopeType scopeType;
@@ -16,14 +20,30 @@ public class BlockScope extends Object implements Scope {
 
     private final Stack<Scope> childScopes;
 
+    private final List<ConditionPack> conditionPackList;
+
+    private final List<SymbolExpression> symbolExpressionList;
+
     private final Integer lineNumber;
 
-    public BlockScope(String scopeName, Integer lineNumber) {
+    public IfScope(String scopeName, Integer lineNumber, List<ConditionPack> conditionPackList) {
         this.lineNumber = lineNumber;
         this.symbolTable = new SymbolTable();
         this.scopeType = ScopeType.block;
         this.scopeName = scopeName;
+        this.conditionPackList = conditionPackList;
         this.childScopes = new Stack<>();
+        this.symbolExpressionList = new ArrayList<>();
+    }
+
+    @Override
+    public void insertSymbolExpression(SymbolExpression symbolExpression) throws SemanticException {
+        symbolExpressionList.add(symbolExpression);
+    }
+
+    @Override
+    public List<SymbolExpression> getSymbolExpressions() {
+        return this.symbolExpressionList;
     }
 
     @Override

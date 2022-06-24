@@ -1,6 +1,9 @@
 import Nothing
-
 import Nothing2
+
+class Adam {
+
+}
 
 class Human(Nothing, Nothing2){
     Nose nose

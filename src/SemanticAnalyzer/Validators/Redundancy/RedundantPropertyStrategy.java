@@ -1,13 +1,18 @@
-package SemanticAnalyzer.Errors;
+package SemanticAnalyzer.Validators.Redundancy;
 
 import Constants.Constants;
 import SemanticAnalyzer.JScope.Scope;
 import SemanticAnalyzer.Models.FieldErrorMeta;
 import SemanticAnalyzer.SymbolValues.ArraySymbolValue;
 import SemanticAnalyzer.SymbolValues.SymbolValue;
+import SemanticAnalyzer.Validators.ErrorProneEntity;
+import SemanticAnalyzer.Validators.ValidationResultModel;
+import SemanticAnalyzer.Validators.ValidationStrategy;
+import SemanticAnalyzer.Validators.ValidationTypes;
+
 import java.util.List;
 
-public class RedundantPropertyStrategy implements ErrorStrategy {
+public class RedundantPropertyStrategy implements ValidationStrategy {
 
     private final List<Scope> scopes;
 
@@ -35,7 +40,7 @@ public class RedundantPropertyStrategy implements ErrorStrategy {
                 if (areTypesSame && areNamesSame && areArraySizeSame) {
                     return new ValidationResultModel(
                             false,
-                            ErrorTypes.propertyReDeclaration,
+                            ValidationTypes.propertyReDeclaration,
                             errorProneEntity,
                             (ErrorProneEntity) resolvedSymbolValue,
                             this.generateErrorMessage(fieldErrorMeta)

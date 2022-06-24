@@ -1,6 +1,6 @@
-package SemanticAnalyzer.Errors;
+package SemanticAnalyzer.Validators;
 
-public interface ErrorStrategy {
+public interface ValidationStrategy {
 
     ValidationResultModel checkValidity(ErrorProneEntity errorProneEntity) throws Exception;
 }

@@ -1,6 +1,6 @@
-package SemanticAnalyzer.Errors;
+package SemanticAnalyzer.Validators;
 
-public enum ErrorTypes {
+public enum ValidationTypes {
 
     methodReDeclaration("MethodReDeclaration"),
 
@@ -12,7 +12,7 @@ public enum ErrorTypes {
 
     private final String name;
 
-    ErrorTypes(String name) {
+    ValidationTypes(String name) {
         this.name = name;
     }
 

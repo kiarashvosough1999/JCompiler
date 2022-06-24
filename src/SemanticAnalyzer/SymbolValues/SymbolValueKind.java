@@ -3,6 +3,7 @@ package SemanticAnalyzer.SymbolValues;
 public enum SymbolValueKind {
 
     importt("Import"),
+
     classs("Class"),
 
     field("Field"),

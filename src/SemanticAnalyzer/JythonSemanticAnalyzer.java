@@ -1,13 +1,20 @@
 package SemanticAnalyzer;
 
 import Constants.Constants;
-import SemanticAnalyzer.Errors.RedundantMethodStrategy;
-import SemanticAnalyzer.Errors.RedundantPropertyStrategy;
-import SemanticAnalyzer.Errors.ValidationResultModel;
+import SemanticAnalyzer.JScope.Scopes.Block.ForScope;
+import SemanticAnalyzer.JScope.Scopes.Block.IfElseScope;
+import SemanticAnalyzer.JScope.Scopes.Block.IfScope;
+import SemanticAnalyzer.JScope.Scopes.Block.WhileScope;
+import SemanticAnalyzer.Models.ForSignatureModel;
+import SemanticAnalyzer.Models.MethodReturnModel;
+import SemanticAnalyzer.Models.ParentClassModel;
+import SemanticAnalyzer.SymbolExpressions.Factories.*;
+import SemanticAnalyzer.Validators.Redundancy.RedundantMethodStrategy;
+import SemanticAnalyzer.Validators.Redundancy.RedundantPropertyStrategy;
+import SemanticAnalyzer.Validators.ValidationResultModel;
 import SemanticAnalyzer.JScope.ParameteredScope;
 import SemanticAnalyzer.JScope.Scope;
 import SemanticAnalyzer.JScope.ScopeType;
-import SemanticAnalyzer.JScope.Scopes.BlockScope;
 import SemanticAnalyzer.JScope.Scopes.ClassScope;
 import SemanticAnalyzer.JScope.Scopes.MethodScope;
 import SemanticAnalyzer.JScope.Scopes.ProgramScope;
@@ -19,8 +26,8 @@ import gen.JythonParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import java.util.ArrayList;
-import java.util.Stack;
+
+import java.util.*;
 
 public class JythonSemanticAnalyzer implements JythonListener {
 
@@ -32,6 +39,10 @@ public class JythonSemanticAnalyzer implements JythonListener {
 
     private Boolean isOnParameters = false;
 
+    public List<Scope> getTopScopes() {
+        return this.topScopes;
+    }
+
     /**
      * Enter a parse tree produced by {@link JythonParser#program}.
      *
@@ -39,7 +50,10 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterProgram(JythonParser.ProgramContext ctx) {
-        ProgramScope programScope = new ProgramScope("Program 1", ctx.start.getLine());
+        StringBuilder builder = new StringBuilder();
+        builder.append("Program ");
+        builder.append(topScopes.size());
+        ProgramScope programScope = new ProgramScope(builder.toString(), ctx.start.getLine());
         scopes.push(programScope);
         topScopes.add(programScope);
     }
@@ -97,18 +111,11 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterClassDef(JythonParser.ClassDefContext ctx) {
-        ArrayList<String> stringArrayList = new ArrayList<>();
-
-        if (ctx.classParentName != null) {
-            stringArrayList.add(ctx.classParentName.getText());
-            if (ctx.otherClassParentName != null) {
-                stringArrayList.add(ctx.otherClassParentName.getText());
-            }
-        }
-
+        List<ParentClassModel> stringArrayList = Helper.extractParentClasses(ctx.CLASSNAME());
+        //fix parents
         ClasssValue classValue = new ClasssValue(
                 ctx.className.getText(),
-                stringArrayList,
+                stringArrayList.stream().map(ParentClassModel::name).toList(),
                 new PositionModel(
                         ctx.className.getLine(),
                         ctx.className.getCharPositionInLine()
@@ -121,6 +128,7 @@ public class JythonSemanticAnalyzer implements JythonListener {
 
         ClassScope classScope = new ClassScope(
                 ctx.className.getText(),
+                stringArrayList,
                 ctx.start.getLine(),
                 new PositionModel(
                         ctx.start.getLine(),
@@ -260,7 +268,6 @@ public class JythonSemanticAnalyzer implements JythonListener {
         MethodScope methodScope = new MethodScope(
                 ctx.methodName.getText(),
                 ctx.methodReturnType.getText(),
-                false,
                 ctx.start.getLine(),
                 new PositionModel(
                         ctx.start.getLine(),
@@ -269,6 +276,9 @@ public class JythonSemanticAnalyzer implements JythonListener {
                 new PositionModel(
                         ctx.start.getLine(),
                         ctx.methodReturnType.getCharPositionInLine()
+                ),
+                new MethodReturnModel(
+                        new ReturnFactory().generateFixSymbolExpression(ctx.statement())
                 )
         );
 
@@ -315,7 +325,6 @@ public class JythonSemanticAnalyzer implements JythonListener {
         MethodScope methodScope = new MethodScope(
                 ctx.cosntructorType.getText(),
                 ctx.cosntructorType.getText(),
-                true,
                 ctx.start.getLine(),
                 new PositionModel(
                         ctx.start.getLine(),
@@ -390,7 +399,24 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterStatement(JythonParser.StatementContext ctx) {
-
+        if (ctx.assignment() != null) {
+            try {
+                this.scopes.peek().insertSymbolExpression(
+                        new AssignmentFactory().generateAssignmentSymbolExpression(ctx.assignment(), this.scopes)
+                );
+                System.out.println("");
+            } catch (Exception exception) {
+                System.out.println(exception);
+            }
+        } else if (ctx.method_call() != null) {
+            try {
+                this.scopes.peek().insertSymbolExpression(
+                        new MethodCallFactory().generateMethodCall(ctx.method_call())
+                );
+            } catch (Exception exception) {
+                System.out.println(exception);
+            }
+        }
     }
 
     /**
@@ -430,7 +456,6 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterCondition_list(JythonParser.Condition_listContext ctx) {
-
     }
 
     /**
@@ -450,7 +475,6 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterCondition(JythonParser.ConditionContext ctx) {
-
     }
 
     /**
@@ -470,7 +494,13 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterIf_statment(JythonParser.If_statmentContext ctx) {
-        BlockScope blockScope = new BlockScope(Constants.If, ctx.start.getLine());
+
+        IfScope blockScope = new IfScope(
+                Constants.If,
+                ctx.start.getLine(),
+                new ConditionFactory().generateConditionSymbolExpression(ctx.condition_list())
+        );
+        System.out.println("");
         try {
             scopes.peek().insertScope(blockScope);
         } catch (SemanticException semanticException) {
@@ -496,7 +526,11 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterWhile_statment(JythonParser.While_statmentContext ctx) {
-        BlockScope blockScope = new BlockScope(Constants.While, ctx.start.getLine());
+        WhileScope blockScope = new WhileScope(
+                Constants.While,
+                ctx.start.getLine(),
+                new ConditionFactory().generateConditionSymbolExpression(ctx.condition_list())
+        );
         try {
             scopes.peek().insertScope(blockScope);
         } catch (SemanticException semanticException) {
@@ -522,7 +556,15 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterIf_else_statment(JythonParser.If_else_statmentContext ctx) {
-        BlockScope blockScope = new BlockScope(Constants.ElseIf, ctx.start.getLine());
+        IfElseScope blockScope = new IfElseScope(
+                Constants.ElseIf,
+                ctx.start.getLine(),
+                ctx.condition_list()
+                        .parallelStream()
+                        .map( s -> new ConditionFactory().generateConditionSymbolExpression(s))
+                        .flatMap(Collection::stream)
+                        .toList()
+        );
         try {
             scopes.peek().insertScope(blockScope);
         } catch (SemanticException semanticException) {
@@ -562,13 +604,40 @@ public class JythonSemanticAnalyzer implements JythonListener {
     }
 
     /**
+     * Enter a parse tree produced by {@link JythonParser#class_instance}.
+     *
+     * @param ctx the parse tree
+     */
+    @Override
+    public void enterClass_instance(JythonParser.Class_instanceContext ctx) {
+        
+    }
+
+    /**
+     * Exit a parse tree produced by {@link JythonParser#class_instance}.
+     *
+     * @param ctx the parse tree
+     */
+    @Override
+    public void exitClass_instance(JythonParser.Class_instanceContext ctx) {
+
+    }
+
+    /**
      * Enter a parse tree produced by {@link JythonParser#for_statment}.
      *
      * @param ctx the parse tree
      */
     @Override
     public void enterFor_statment(JythonParser.For_statmentContext ctx) {
-        BlockScope blockScope = new BlockScope(Constants.For, ctx.start.getLine());
+        ForScope blockScope = new ForScope(
+                Constants.For,
+                ctx.start.getLine(),
+                new ForSignatureModel(
+                        ctx.forIndex != null ? ctx.forIndex.getText() : ctx.forRangeIndex.getText(),
+                        ctx.forBound != null ? Optional.ofNullable(ctx.forBound.getText()) : Optional.empty()
+                )
+        );
         try {
             scopes.peek().insertScope(blockScope);
         } catch (SemanticException semanticException) {
@@ -627,7 +696,6 @@ public class JythonSemanticAnalyzer implements JythonListener {
 
     @Override
     public void enterExp(JythonParser.ExpContext ctx) {
-
     }
 
     @Override
@@ -672,7 +740,6 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterExplist(JythonParser.ExplistContext ctx) {
-
     }
 
     /**

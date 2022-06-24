@@ -1,4 +1,4 @@
-package SemanticAnalyzer.Errors;
+package SemanticAnalyzer.Validators;
 
 public interface ErrorProneEntity {
 
