@@ -22,6 +22,7 @@ package Runner;
 
 import ProgramPrinter.ProgramPrinter;
 import SemanticAnalyzer.JythonSemanticAnalyzer;
+import SemanticAnalyzer.Validators.Usage.ClassUsageValidator;
 import gen.JythonLexer;
 import gen.JythonListener;
 import gen.JythonParser;
@@ -46,5 +47,8 @@ public class Main {
         JythonSemanticAnalyzer listener = new JythonSemanticAnalyzer();
 
         parseTreeWalker.walk(listener, tree);
+
+        ClassUsageValidator classUsageValidator = new ClassUsageValidator();
+        classUsageValidator.validateClasses(listener.getTopScopes());
     }
 }

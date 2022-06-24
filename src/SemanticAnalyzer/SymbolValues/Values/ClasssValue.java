@@ -1,13 +1,14 @@
 package SemanticAnalyzer.SymbolValues.Values;
 
 import Constants.Constants;
-import SemanticAnalyzer.Errors.ErrorProneEntity;
+import SemanticAnalyzer.Validators.ErrorProneEntity;
 import SemanticAnalyzer.Models.ErrorProneEntityMeta;
 import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SymbolValues.SymbolValue;
 import SemanticAnalyzer.SymbolValues.SymbolValueKind;
 import SemanticAnalyzer.SymbolValues.SymbolValueOwner;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ClasssValue extends Object implements SymbolValue, ErrorProneEntity {
 
@@ -15,7 +16,7 @@ public class ClasssValue extends Object implements SymbolValue, ErrorProneEntity
 
     final private SymbolValueKind kind;
 
-    final private ArrayList<String> classParents;
+    final private List<String> classParents;
 
     private final PositionModel namePosition;
 
@@ -23,7 +24,7 @@ public class ClasssValue extends Object implements SymbolValue, ErrorProneEntity
 
     private final SymbolValueOwner owner;
 
-    public ClasssValue(String name, ArrayList<String> classParents, PositionModel namePosition, PositionModel typePosition, SymbolValueOwner owner) {
+    public ClasssValue(String name, List<String> classParents, PositionModel namePosition, PositionModel typePosition, SymbolValueOwner owner) {
         this.name = name;
         this.namePosition = namePosition;
         this.typePosition = typePosition;

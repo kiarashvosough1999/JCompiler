@@ -543,6 +543,26 @@ public class ProgramPrinter implements JythonListener {
     }
 
     /**
+     * Enter a parse tree produced by {@link JythonParser#class_instance}.
+     *
+     * @param ctx the parse tree
+     */
+    @Override
+    public void enterClass_instance(JythonParser.Class_instanceContext ctx) {
+
+    }
+
+    /**
+     * Exit a parse tree produced by {@link JythonParser#class_instance}.
+     *
+     * @param ctx the parse tree
+     */
+    @Override
+    public void exitClass_instance(JythonParser.Class_instanceContext ctx) {
+
+    }
+
+    /**
      * Enter a parse tree produced by {@link JythonParser#for_statment}.
      *
      * @param ctx the parse tree

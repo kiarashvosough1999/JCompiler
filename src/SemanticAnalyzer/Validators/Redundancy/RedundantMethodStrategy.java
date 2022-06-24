@@ -1,4 +1,4 @@
-package SemanticAnalyzer.Errors;
+package SemanticAnalyzer.Validators.Redundancy;
 
 import Constants.Constants;
 import SemanticAnalyzer.Exceptions.IncorrectDetectorExeception;
@@ -8,10 +8,14 @@ import SemanticAnalyzer.JScope.Scope;
 import SemanticAnalyzer.JScope.ScopeType;
 import SemanticAnalyzer.JScope.Scopes.MethodScope;
 import SemanticAnalyzer.Models.ParameterModel;
-import java.util.List;
-import java.util.Optional;
+import SemanticAnalyzer.Validators.ErrorProneEntity;
+import SemanticAnalyzer.Validators.ValidationResultModel;
+import SemanticAnalyzer.Validators.ValidationStrategy;
+import SemanticAnalyzer.Validators.ValidationTypes;
 
-public class RedundantMethodStrategy implements ErrorStrategy {
+import java.util.List;
+
+public class RedundantMethodStrategy implements ValidationStrategy {
 
     private final List<Scope> scopes;
 
@@ -64,7 +68,7 @@ public class RedundantMethodStrategy implements ErrorStrategy {
                 // methods were identical and redeclared
                 return new ValidationResultModel(
                         false,
-                        ErrorTypes.methodReDeclaration,
+                        ValidationTypes.methodReDeclaration,
                         errorProneEntity,
                         candidateMethodScope,
                         this.generateErrorMessage(

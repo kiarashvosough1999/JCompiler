@@ -50,4 +50,14 @@ public class Constants {
     public final static String ElseIf = " else if ";
 
     public final static String Field = "Field";
+
+    public final static String None = "None";
+
+    public final static String Bool = "Bool";
+
+    public final static String Float = "Float";
+
+    public final static String Integer = "Integer";
+
+    public final static String String = "String";
 }

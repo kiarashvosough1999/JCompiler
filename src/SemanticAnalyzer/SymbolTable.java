@@ -4,10 +4,15 @@ import Constants.Constants;
 import SemanticAnalyzer.SymbolValues.SymbolValue;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class SymbolTable {
 
     private final Map<String, SymbolValue> table;
+
+    public Set<Map.Entry<String, SymbolValue>> getEntrySet() {
+        return table.entrySet();
+    }
 
     public SymbolTable() {
         this.table = new HashMap<>();

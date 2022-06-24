@@ -1,7 +1,9 @@
 package SemanticAnalyzer.JScope.Scopes;
 
 import Constants.Constants;
-import SemanticAnalyzer.Errors.ErrorProneEntity;
+import SemanticAnalyzer.Models.MethodReturnModel;
+import SemanticAnalyzer.SymbolExpressions.SymbolExpression;
+import SemanticAnalyzer.Validators.ErrorProneEntity;
 import SemanticAnalyzer.Models.MethodErrorMeta;
 import SemanticAnalyzer.Helper;
 import SemanticAnalyzer.JScope.ParameteredScope;
@@ -12,6 +14,8 @@ import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SemanticException;
 import SemanticAnalyzer.SymbolTable;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.Stack;
 
 public class MethodScope implements ParameteredScope, ErrorProneEntity {
@@ -28,6 +32,10 @@ public class MethodScope implements ParameteredScope, ErrorProneEntity {
 
     private final ArrayList<ParameterModel> parameters;
 
+    private final List<SymbolExpression> symbolExpressionList;
+
+    private final Optional<MethodReturnModel> returnModel;
+
     private final Integer lineNumber;
 
     private final PositionModel namePosition;
@@ -36,7 +44,6 @@ public class MethodScope implements ParameteredScope, ErrorProneEntity {
 
     public MethodScope(String scopeName,
                        String returnType,
-                       Boolean isConstructor,
                        Integer lineNumber,
                        PositionModel namePosition,
                        PositionModel returnTypePosition) {
@@ -45,14 +52,40 @@ public class MethodScope implements ParameteredScope, ErrorProneEntity {
         this.returnTypePosition = returnTypePosition;
         this.symbolTable = new SymbolTable();
         this.returnType = returnType == null ? "void" : returnType;
-        this.scopeType = isConstructor ? ScopeType.constructor : ScopeType.method;
-        this.scopeName = isConstructor ? scopeName + Constants.Constructor : scopeName;
+        this.scopeType = ScopeType.constructor;
+        this.scopeName = scopeName + Constants.Constructor;
+        this.returnModel = Optional.empty();
         this.childScopes = new Stack<>();
         this.parameters = new ArrayList<>();
+        this.symbolExpressionList = new ArrayList<>();
+    }
+
+    public MethodScope(String scopeName,
+                       String returnType,
+                       Integer lineNumber,
+                       PositionModel namePosition,
+                       PositionModel returnTypePosition,
+                       MethodReturnModel returnModel) {
+        this.lineNumber = lineNumber;
+        this.namePosition = namePosition;
+        this.returnTypePosition = returnTypePosition;
+        this.symbolTable = new SymbolTable();
+        this.returnType = returnType == null ? "void" : returnType;
+        this.scopeType = ScopeType.method;
+        this.scopeName = scopeName;
+        this.returnModel = Optional.ofNullable(returnModel);
+        this.childScopes = new Stack<>();
+        this.parameters = new ArrayList<>();
+        this.symbolExpressionList = new ArrayList<>();
     }
 
     public String getReturnType() {
         return returnType;
+    }
+
+    @Override
+    public List<SymbolExpression> getSymbolExpressions() {
+        return this.symbolExpressionList;
     }
 
     @Override
@@ -63,6 +96,11 @@ public class MethodScope implements ParameteredScope, ErrorProneEntity {
     @Override
     public ArrayList<ParameterModel> getParameters() {
         return parameters;
+    }
+
+    @Override
+    public void insertSymbolExpression(SymbolExpression symbolExpression) throws SemanticException {
+        symbolExpressionList.add(symbolExpression);
     }
 
     @Override

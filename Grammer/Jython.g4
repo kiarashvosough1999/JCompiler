@@ -44,7 +44,7 @@ statement : varDec | assignment | print_statment | method_call | return_statment
 
 return_statment : 'return' exp ;
 
-condition_list : condition (('or'|'and') condition)* ;
+condition_list : condition ((operator = ('or'|'and')) condition)* ;
 
 condition : BOOL | prefixexp | (exp) relational_operators (exp);
 
@@ -54,17 +54,20 @@ while_statment : 'while' '(' condition_list ')' '{' statement* '}' ;
 
 if_else_statment :'if' '(' condition_list ')' '{' statement* '}' ('elif' '(' condition_list ')' '{' statement* '}')* 'else' '{' statement* '}' ;
 
-print_statment : 'print' '(' (prefixexp | (TYPE | CLASSNAME) args | INTEGER | STRING | BOOL) ')' ;
+print_statment : 'print' '(' (prefixexp | class_instance | INTEGER | STRING | BOOL) ')' ;
 
-for_statment : 'for' ID 'in' ID '{' statement* '}' | 'for' ID 'in' 'range''('INTEGER (',' INTEGER)? (',' INTEGER)? ')' '{' statement* '}' ;
+class_instance : className = (TYPE | CLASSNAME) args ;
 
-method_call : ID ('.')? args ;
+for_statment : 'for' (forIndex = ID) 'in' (forBound = ID) '{' statement* '}' | 'for' (forRangeIndex = ID) 'in' 'range' '('INTEGER (',' INTEGER)? (',' INTEGER)? ')' '{' statement* '}' ;
 
-assignment : prefixexp assignment_operators exp | varDec assignment_operators exp | arrayDec '=' (TYPE | CLASSNAME) args ('['INTEGER']') ;
+// use parser to extract each rule as expression
+method_call : (methodName = ID) ('.')? args ;
 
-exp :'none' | BOOL | INTEGER | STRING | FLOAT | prefixexp | exp arithmetic_operator exp | (TYPE | CLASSNAME) args | '('exp')' | ID args ;
+assignment : prefixexp assignment_operators exp | varDec assignment_operators exp | arrayDec '=' class_instance ('[' (arraySize = INTEGER) ']') ;
 
-prefixexp : ID | prefixexp '[' INTEGER ']' | prefixexp '.' ID | prefixexp '.' ID args ;
+exp : 'none' | BOOL | INTEGER | STRING | FLOAT | prefixexp | exp arithmetic_operator exp | class_instance | '('exp')' | (methodName = ID) args ;
+
+prefixexp : id = ID | prefixexp '[' (arrayCount = INTEGER) ']' | prefixexp '.' (nextId = ID) | prefixexp '.' (methodNAme = ID) args ;
 
 args : '(' (explist)? ')' ;
 

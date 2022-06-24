@@ -177,6 +177,16 @@ public interface JythonListener extends ParseTreeListener {
 	 */
 	void exitPrint_statment(JythonParser.Print_statmentContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link JythonParser#class_instance}.
+	 * @param ctx the parse tree
+	 */
+	void enterClass_instance(JythonParser.Class_instanceContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JythonParser#class_instance}.
+	 * @param ctx the parse tree
+	 */
+	void exitClass_instance(JythonParser.Class_instanceContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link JythonParser#for_statment}.
 	 * @param ctx the parse tree
 	 */

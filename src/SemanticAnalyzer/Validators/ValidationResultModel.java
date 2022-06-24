@@ -1,8 +1,8 @@
-package SemanticAnalyzer.Errors;
+package SemanticAnalyzer.Validators;
 
 public record ValidationResultModel(
         boolean isValid,
-        ErrorTypes errorTypes,
+        ValidationTypes validationTypes,
         ErrorProneEntity errorEntity,
         ErrorProneEntity conflictedErrorEntity,
         String errorMessage

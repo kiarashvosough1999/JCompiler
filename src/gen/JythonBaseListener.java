@@ -219,6 +219,18 @@ public class JythonBaseListener implements JythonListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterClass_instance(JythonParser.Class_instanceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitClass_instance(JythonParser.Class_instanceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterFor_statment(JythonParser.For_statmentContext ctx) { }
 	/**
 	 * {@inheritDoc}

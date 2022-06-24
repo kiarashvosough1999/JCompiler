@@ -112,6 +112,12 @@ public interface JythonVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPrint_statment(JythonParser.Print_statmentContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link JythonParser#class_instance}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitClass_instance(JythonParser.Class_instanceContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link JythonParser#for_statment}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
