@@ -37,6 +37,10 @@ public class ForScope implements Scope {
     }
 
     @Override
+    public List<SymbolExpression> getSymbolExpressionList() {
+        return symbolExpressionList;
+    }
+    @Override
     public void insertSymbolExpression(SymbolExpression symbolExpression) throws SemanticException {
         symbolExpressionList.add(symbolExpression);
     }

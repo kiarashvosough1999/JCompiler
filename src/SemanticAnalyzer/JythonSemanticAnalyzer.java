@@ -9,6 +9,7 @@ import SemanticAnalyzer.Models.ForSignatureModel;
 import SemanticAnalyzer.Models.MethodReturnModel;
 import SemanticAnalyzer.Models.ParentClassModel;
 import SemanticAnalyzer.SymbolExpressions.Factories.*;
+import SemanticAnalyzer.SymbolValues.SymbolValue;
 import SemanticAnalyzer.Validators.Redundancy.RedundantMethodStrategy;
 import SemanticAnalyzer.Validators.Redundancy.RedundantPropertyStrategy;
 import SemanticAnalyzer.Validators.ValidationResultModel;
@@ -38,6 +39,8 @@ public class JythonSemanticAnalyzer implements JythonListener {
     private final Stack<ValidationResultModel> errorStack = new Stack<>();
 
     private Boolean isOnParameters = false;
+
+    private Boolean isOnStatement = false;
 
     public List<Scope> getTopScopes() {
         return this.topScopes;
@@ -69,7 +72,9 @@ public class JythonSemanticAnalyzer implements JythonListener {
             System.out.println(scope);
         }
         for (ValidationResultModel resultModel : errorStack) {
-            System.out.println(resultModel);
+            if (!resultModel.isValid()) {
+                System.out.println(resultModel);
+            }
         }
         scopes.pop();
         System.out.println("lines" + Integer.valueOf(ctx.start.getLine()).toString());
@@ -161,7 +166,7 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterClass_body(JythonParser.Class_bodyContext ctx) {
-
+        System.out.println("");
     }
 
     /**
@@ -277,9 +282,7 @@ public class JythonSemanticAnalyzer implements JythonListener {
                         ctx.start.getLine(),
                         ctx.methodReturnType.getCharPositionInLine()
                 ),
-                new MethodReturnModel(
-                        new ReturnFactory().generateFixSymbolExpression(ctx.statement())
-                )
+                null
         );
 
         RedundantMethodStrategy strategy = new RedundantMethodStrategy(
@@ -399,24 +402,25 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterStatement(JythonParser.StatementContext ctx) {
-        if (ctx.assignment() != null) {
-            try {
-                this.scopes.peek().insertSymbolExpression(
-                        new AssignmentFactory().generateAssignmentSymbolExpression(ctx.assignment(), this.scopes)
-                );
-                System.out.println("");
-            } catch (Exception exception) {
-                System.out.println(exception);
-            }
-        } else if (ctx.method_call() != null) {
-            try {
-                this.scopes.peek().insertSymbolExpression(
-                        new MethodCallFactory().generateMethodCall(ctx.method_call())
-                );
-            } catch (Exception exception) {
-                System.out.println(exception);
-            }
-        }
+        isOnStatement = true;
+//        if (ctx.assignment() != null) {
+//            try {
+//                this.scopes.peek().insertSymbolExpression(
+//                        new AssignmentFactory().generateAssignmentSymbolExpression(ctx.assignment(), this.scopes)
+//                );
+//                System.out.println("");
+//            } catch (Exception exception) {
+//                System.out.println(exception);
+//            }
+//        } else if (ctx.method_call() != null) {
+//            try {
+//                this.scopes.peek().insertSymbolExpression(
+//                        new MethodCallFactory().generateMethodCall(ctx.method_call())
+//                );
+//            } catch (Exception exception) {
+//                System.out.println(exception);
+//            }
+//        }
     }
 
     /**
@@ -426,7 +430,7 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void exitStatement(JythonParser.StatementContext ctx) {
-
+        isOnStatement = false;
     }
 
     /**
@@ -498,7 +502,7 @@ public class JythonSemanticAnalyzer implements JythonListener {
         IfScope blockScope = new IfScope(
                 Constants.If,
                 ctx.start.getLine(),
-                new ConditionFactory().generateConditionSymbolExpression(ctx.condition_list())
+                null
         );
         System.out.println("");
         try {
@@ -529,7 +533,7 @@ public class JythonSemanticAnalyzer implements JythonListener {
         WhileScope blockScope = new WhileScope(
                 Constants.While,
                 ctx.start.getLine(),
-                new ConditionFactory().generateConditionSymbolExpression(ctx.condition_list())
+                null
         );
         try {
             scopes.peek().insertScope(blockScope);
@@ -559,11 +563,7 @@ public class JythonSemanticAnalyzer implements JythonListener {
         IfElseScope blockScope = new IfElseScope(
                 Constants.ElseIf,
                 ctx.start.getLine(),
-                ctx.condition_list()
-                        .parallelStream()
-                        .map( s -> new ConditionFactory().generateConditionSymbolExpression(s))
-                        .flatMap(Collection::stream)
-                        .toList()
+                null
         );
         try {
             scopes.peek().insertScope(blockScope);
@@ -638,6 +638,41 @@ public class JythonSemanticAnalyzer implements JythonListener {
                         ctx.forBound != null ? Optional.ofNullable(ctx.forBound.getText()) : Optional.empty()
                 )
         );
+
+        // i
+        if (ctx.forIndex != null) {
+            // search for var
+            FieldValue fieldValue = new FieldValue(
+                    ctx.forIndex.getText(),
+                    "int", // wrong
+                    new PositionModel(
+                            ctx.forIndex.getLine(),
+                            ctx.forIndex.getCharPositionInLine()
+                    ),
+                    new PositionModel(
+                            ctx.forIndex.getLine(),
+                            ctx.forIndex.getCharPositionInLine()
+                    ),
+                    SymbolValueOwner.from(scopes.peek().getScopeType())
+            );
+            blockScope.getSymbolTable().insert(fieldValue);
+        } else if (ctx.forRangeIndex != null) {
+            FieldValue fieldValue = new FieldValue(
+                    ctx.forRangeIndex.getText(),
+                    "int",
+                    new PositionModel(
+                            ctx.forRangeIndex.getLine(),
+                            ctx.forRangeIndex.getCharPositionInLine()
+                    ),
+                    new PositionModel(
+                            ctx.forRangeIndex.getLine(),
+                            ctx.forRangeIndex.getCharPositionInLine()
+                    ),
+                    SymbolValueOwner.from(scopes.peek().getScopeType())
+            );
+            blockScope.getSymbolTable().insert(fieldValue);
+        }
+
         try {
             scopes.peek().insertScope(blockScope);
         } catch (SemanticException semanticException) {
@@ -663,6 +698,15 @@ public class JythonSemanticAnalyzer implements JythonListener {
      */
     @Override
     public void enterMethod_call(JythonParser.Method_callContext ctx) {
+        if (isOnStatement) {
+            ValidationResultModel validationResultModel = new MethodCallFactory(
+                    Optional.empty()
+            ).generateMethodCall(
+                    ctx,
+                    this.scopes
+            );
+            errorStack.push(validationResultModel);
+        }
     }
 
     /**
@@ -705,7 +749,14 @@ public class JythonSemanticAnalyzer implements JythonListener {
 
     @Override
     public void enterPrefixexp(JythonParser.PrefixexpContext ctx) {
+        PreFixExpressionFactory preFixExpressionFactory = new PreFixExpressionFactory();
 
+        errorStack.push(
+                preFixExpressionFactory.generatePreFixSymbolExpression(
+                        ctx,
+                        scopes
+                )
+        );
     }
 
     @Override

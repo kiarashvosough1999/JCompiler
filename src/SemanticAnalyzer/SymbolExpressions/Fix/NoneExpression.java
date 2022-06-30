@@ -1,6 +1,7 @@
 package SemanticAnalyzer.SymbolExpressions.Fix;
 
 import Constants.Constants;
+import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SymbolExpressions.SymbolExpressionKind;
 
 public class NoneExpression implements FixSymbolExpression {
@@ -14,7 +15,10 @@ public class NoneExpression implements FixSymbolExpression {
         this.expressionName = Constants.None;
     }
 
-
+    @Override
+    public PositionModel getPostion() {
+        return null;
+    }
     @Override
     public SymbolExpressionKind getKind() {
         return expressionKind;

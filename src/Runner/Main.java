@@ -23,6 +23,7 @@ package Runner;
 import ProgramPrinter.ProgramPrinter;
 import SemanticAnalyzer.JythonSemanticAnalyzer;
 import SemanticAnalyzer.Validators.Usage.ClassUsageValidator;
+import SemanticAnalyzer.Validators.Usage.DefinedPropertyUsage;
 import gen.JythonLexer;
 import gen.JythonListener;
 import gen.JythonParser;
@@ -50,5 +51,8 @@ public class Main {
 
         ClassUsageValidator classUsageValidator = new ClassUsageValidator();
         classUsageValidator.validateClasses(listener.getTopScopes());
+
+        DefinedPropertyUsage definedPropertyUsage = new DefinedPropertyUsage(listener.getTopScopes());
+        definedPropertyUsage.run();
     }
 }

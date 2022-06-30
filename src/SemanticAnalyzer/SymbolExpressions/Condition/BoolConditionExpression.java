@@ -1,5 +1,6 @@
 package SemanticAnalyzer.SymbolExpressions.Condition;
 
+import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SymbolExpressions.SymbolExpressionKind;
 
 public class BoolConditionExpression implements ConditionSymbolExpression {
@@ -14,7 +15,12 @@ public class BoolConditionExpression implements ConditionSymbolExpression {
     }
 
     @Override
-    public SymbolExpressionKind getKind() {
+    public PositionModel getPostion() {
         return null;
+    }
+
+    @Override
+    public SymbolExpressionKind getKind() {
+        return expressionKind;
     }
 }

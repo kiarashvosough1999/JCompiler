@@ -9,6 +9,8 @@ import java.util.Stack;
 
 public interface Scope {
 
+    List<SymbolExpression> getSymbolExpressionList();
+
     SymbolTable getSymbolTable();
 
     ScopeType getScopeType();

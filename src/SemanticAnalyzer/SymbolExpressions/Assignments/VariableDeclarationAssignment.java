@@ -1,6 +1,7 @@
 package SemanticAnalyzer.SymbolExpressions.Assignments;
 
 import SemanticAnalyzer.Models.AssignmentOperators;
+import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SymbolExpressions.Fix.FixSymbolExpression;
 import SemanticAnalyzer.SymbolExpressions.SymbolExpressionKind;
 import SemanticAnalyzer.SymbolValues.SymbolValue;
@@ -15,9 +16,13 @@ public class VariableDeclarationAssignment implements AssignmentSymbolExpression
 
     private final FixSymbolExpression fixSymbolExpression;
 
-    public VariableDeclarationAssignment(SymbolValue symbolValue,
+    private final PositionModel positionModel;
+
+    public VariableDeclarationAssignment(PositionModel positionModel,
+                                         SymbolValue symbolValue,
                                          AssignmentOperators assignmentOperators,
                                          FixSymbolExpression fixSymbolExpression) {
+        this.positionModel = positionModel;
         this.symbolValue = symbolValue;
         this.assignmentOperators = assignmentOperators;
         this.fixSymbolExpression = fixSymbolExpression;
@@ -26,7 +31,12 @@ public class VariableDeclarationAssignment implements AssignmentSymbolExpression
 
 
     @Override
+    public PositionModel getPostion() {
+        return positionModel;
+    }
+
+    @Override
     public SymbolExpressionKind getKind() {
-        return null;
+        return expressionKind;
     }
 }

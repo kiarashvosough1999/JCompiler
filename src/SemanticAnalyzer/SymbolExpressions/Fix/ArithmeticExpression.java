@@ -1,6 +1,7 @@
 package SemanticAnalyzer.SymbolExpressions.Fix;
 
 import SemanticAnalyzer.Models.ArithmeticOperator;
+import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SymbolExpressions.SymbolExpressionKind;
 
 public class ArithmeticExpression implements FixSymbolExpression {
@@ -19,6 +20,12 @@ public class ArithmeticExpression implements FixSymbolExpression {
         this.afterExpression = afterExpression;
         this.expressionKind = SymbolExpressionKind.ArithmeticExpression;
     }
+
+    @Override
+    public PositionModel getPostion() {
+        return null;
+    }
+
     @Override
     public SymbolExpressionKind getKind() {
         return expressionKind;

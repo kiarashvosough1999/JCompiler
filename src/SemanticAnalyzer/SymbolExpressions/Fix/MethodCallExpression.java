@@ -1,5 +1,6 @@
 package SemanticAnalyzer.SymbolExpressions.Fix;
 
+import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SymbolExpressions.SymbolExpressionKind;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,11 @@ public class MethodCallExpression implements FixSymbolExpression {
         this.args = args;
         this.methodName = methodName;
         this.expressionKind = SymbolExpressionKind.MethodCallExpression;
+    }
+
+    @Override
+    public PositionModel getPostion() {
+        return null;
     }
 
     @Override

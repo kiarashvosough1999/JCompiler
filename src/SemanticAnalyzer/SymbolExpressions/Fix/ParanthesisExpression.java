@@ -1,5 +1,6 @@
 package SemanticAnalyzer.SymbolExpressions.Fix;
 
+import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SymbolExpressions.SymbolExpressionKind;
 
 public class ParanthesisExpression implements FixSymbolExpression {
@@ -11,6 +12,11 @@ public class ParanthesisExpression implements FixSymbolExpression {
     public ParanthesisExpression(FixSymbolExpression expression) {
         this.expression = expression;
         this.expressionKind = SymbolExpressionKind.ParanthesisExpression;
+    }
+
+    @Override
+    public PositionModel getPostion() {
+        return null;
     }
     @Override
     public SymbolExpressionKind getKind() {

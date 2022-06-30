@@ -34,7 +34,7 @@ arrayDec : arrayType = (TYPE | CLASSNAME) '['arraySize = INTEGER']' arrayVaribal
 
 methodDec : 'def' methodReturnType = (TYPE | CLASSNAME |'void') methodName = ID '(' methodParameters = parameter* ')''{' methodStatement = statement* '}';
 
-constructor : 'def' cosntructorType = (TYPE | CLASSNAME) '(' constructorParameters = parameter* ')''{' (statement)* '}' ;
+constructor : 'def' cosntructorType = (TYPE | CLASSNAME) '(' constructorParameters = parameter* ')' '{' (statement)* '}' ;
 
 parameter : varDec (',' varDec)* ;
 
@@ -46,7 +46,7 @@ return_statment : 'return' exp ;
 
 condition_list : condition ((operator = ('or'|'and')) condition)* ;
 
-condition : BOOL | prefixexp | (exp) relational_operators (exp);
+condition : BOOLVALUES | prefixexp | (exp) relational_operators (exp);
 
 if_statment : 'if' '(' condition_list ')' '{' statement* '}';
 
@@ -54,18 +54,18 @@ while_statment : 'while' '(' condition_list ')' '{' statement* '}' ;
 
 if_else_statment :'if' '(' condition_list ')' '{' statement* '}' ('elif' '(' condition_list ')' '{' statement* '}')* 'else' '{' statement* '}' ;
 
-print_statment : 'print' '(' (prefixexp | class_instance | INTEGER | STRING | BOOL) ')' ;
+print_statment : 'print' '(' (prefixexp | class_instance | INTEGER | STRINGVALUE | BOOLVALUES) ')' ;
 
-class_instance : className = (TYPE | CLASSNAME) args ;
+class_instance : className = (TYPE | CLASSNAME) args ; // done
 
 for_statment : 'for' (forIndex = ID) 'in' (forBound = ID) '{' statement* '}' | 'for' (forRangeIndex = ID) 'in' 'range' '('INTEGER (',' INTEGER)? (',' INTEGER)? ')' '{' statement* '}' ;
 
 // use parser to extract each rule as expression
-method_call : (methodName = ID) ('.')? args ;
+method_call : (methodName = ID) ('.')? args ; // done
 
 assignment : prefixexp assignment_operators exp | varDec assignment_operators exp | arrayDec '=' class_instance ('[' (arraySize = INTEGER) ']') ;
 
-exp : 'none' | BOOL | INTEGER | STRING | FLOAT | prefixexp | exp arithmetic_operator exp | class_instance | '('exp')' | (methodName = ID) args ;
+exp : 'none' | BOOLVALUES | INTEGER | STRINGVALUE | FLOAT | prefixexp | exp arithmetic_operator exp | class_instance | '('exp')' | method_call ; // half done
 
 prefixexp : id = ID | prefixexp '[' (arrayCount = INTEGER) ']' | prefixexp '.' (nextId = ID) | prefixexp '.' (methodNAme = ID) args ;
 
@@ -85,6 +85,8 @@ INT: 'int';
 FLOATING_POINT: 'float';
 STRING: 'string';
 BOOL: 'bool';
+BOOLVALUES: 'true' | 'false' ;
+STRINGVALUE: '"' [a-z]([A-Za-z_])* '"';
 CLASSNAME: [A-Z] (LETTER|DIGIT)*;
 ID: [a-z]([A-Za-z_])*;
 LETTER: [A-Za-z];

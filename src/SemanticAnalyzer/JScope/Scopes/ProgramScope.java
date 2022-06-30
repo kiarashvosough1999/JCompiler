@@ -34,6 +34,11 @@ public class ProgramScope implements Scope {
     }
 
     @Override
+    public List<SymbolExpression> getSymbolExpressionList() {
+        return symbolExpressionList;
+    }
+
+    @Override
     public SymbolTable getSymbolTable() {
         return this.symbolTable;
     }

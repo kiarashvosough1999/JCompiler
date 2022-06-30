@@ -79,8 +79,17 @@ public class MethodScope implements ParameteredScope, ErrorProneEntity {
         this.symbolExpressionList = new ArrayList<>();
     }
 
+    public PositionModel getNamePosition() {
+        return namePosition;
+    }
+
     public String getReturnType() {
         return returnType;
+    }
+
+    @Override
+    public List<SymbolExpression> getSymbolExpressionList() {
+        return symbolExpressionList;
     }
 
     @Override

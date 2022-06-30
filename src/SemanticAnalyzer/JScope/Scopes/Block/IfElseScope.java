@@ -37,6 +37,10 @@ public class IfElseScope implements Scope {
     }
 
     @Override
+    public List<SymbolExpression> getSymbolExpressionList() {
+        return symbolExpressionList;
+    }
+    @Override
     public List<SymbolExpression> getSymbolExpressions() {
         return this.symbolExpressionList;
     }

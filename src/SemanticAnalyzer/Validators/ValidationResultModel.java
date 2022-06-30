@@ -7,6 +7,9 @@ public record ValidationResultModel(
         ErrorProneEntity conflictedErrorEntity,
         String errorMessage
 ) {
+
+
+
     @Override
     public String toString() {
         return this.errorMessage;

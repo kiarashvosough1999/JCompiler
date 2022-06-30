@@ -1,5 +1,6 @@
 package SemanticAnalyzer.SymbolExpressions.Condition;
 
+import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.Models.RelationalOperators;
 import SemanticAnalyzer.SymbolExpressions.Fix.FixSymbolExpression;
 import SemanticAnalyzer.SymbolExpressions.SymbolExpressionKind;
@@ -24,7 +25,11 @@ public class RelationalOperatorsCondition implements ConditionSymbolExpression {
     }
 
     @Override
-    public SymbolExpressionKind getKind() {
+    public PositionModel getPostion() {
         return null;
+    }
+    @Override
+    public SymbolExpressionKind getKind() {
+        return expressionKind;
     }
 }

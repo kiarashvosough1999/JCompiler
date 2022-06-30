@@ -1,5 +1,6 @@
 package SemanticAnalyzer.SymbolExpressions.Condition;
 
+import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SymbolExpressions.PreFix.PreFixSymbolExpression;
 import SemanticAnalyzer.SymbolExpressions.SymbolExpressionKind;
 
@@ -15,7 +16,11 @@ public class PrefixCondition implements ConditionSymbolExpression {
     }
 
     @Override
-    public SymbolExpressionKind getKind() {
+    public PositionModel getPostion() {
         return null;
+    }
+    @Override
+    public SymbolExpressionKind getKind() {
+        return expressionKind;
     }
 }

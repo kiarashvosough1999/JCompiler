@@ -42,6 +42,10 @@ public class WhileScope implements Scope {
     }
 
     @Override
+    public List<SymbolExpression> getSymbolExpressionList() {
+        return symbolExpressionList;
+    }
+    @Override
     public List<SymbolExpression> getSymbolExpressions() {
         return this.symbolExpressionList;
     }

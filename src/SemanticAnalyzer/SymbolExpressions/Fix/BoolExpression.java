@@ -1,6 +1,7 @@
 package SemanticAnalyzer.SymbolExpressions.Fix;
 
 import Constants.Constants;
+import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SymbolExpressions.SymbolExpressionKind;
 
 public class BoolExpression implements FixSymbolExpression {
@@ -18,6 +19,10 @@ public class BoolExpression implements FixSymbolExpression {
     }
 
 
+    @Override
+    public PositionModel getPostion() {
+        return null;
+    }
     @Override
     public SymbolExpressionKind getKind() {
         return expressionKind;

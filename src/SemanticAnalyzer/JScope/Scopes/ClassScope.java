@@ -46,6 +46,15 @@ public class ClassScope implements Scope, ErrorProneEntity {
         this.symbolExpressionList = new ArrayList<>();
     }
 
+    public List<ParentClassModel> getClassParents() {
+        return classParents;
+    }
+
+    @Override
+    public List<SymbolExpression> getSymbolExpressionList() {
+        return symbolExpressionList;
+    }
+
     @Override
     public SymbolTable getSymbolTable() {
         return this.symbolTable;

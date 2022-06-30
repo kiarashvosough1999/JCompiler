@@ -1,6 +1,7 @@
 package SemanticAnalyzer.SymbolExpressions.Fix;
 
 import Constants.Constants;
+import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SymbolExpressions.SymbolExpressionKind;
 
 public class IntegerExpression implements FixSymbolExpression {
@@ -17,6 +18,10 @@ public class IntegerExpression implements FixSymbolExpression {
         this.expressionName = Constants.Integer;
     }
 
+    @Override
+    public PositionModel getPostion() {
+        return null;
+    }
 
     @Override
     public SymbolExpressionKind getKind() {

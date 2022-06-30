@@ -1,5 +1,6 @@
 package SemanticAnalyzer.SymbolExpressions.Fix;
 
+import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SymbolExpressions.SymbolExpressionKind;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,10 @@ public class ClassInstaceExpression implements FixSymbolExpression {
         this.expressionKind = SymbolExpressionKind.ClassInstaceExpression;
     }
 
+    @Override
+    public PositionModel getPostion() {
+        return null;
+    }
     public ClassInstaceExpression(String className, List<FixSymbolExpression> args) {
         this.args = args;
         this.className = className;
