@@ -14,7 +14,7 @@ The project splited into 3 phase. Each phase has its own tag on the repository, 
 
 - [x] Phase 1 - Formated Program Printer
 - [x] Phase 2 - Semantic Analysis
-- [ ] Phase 3 - Errors Detection
+- [x] Phase 3 - Errors Detection
 
 ## Requirements
 
