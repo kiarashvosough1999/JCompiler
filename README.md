@@ -36,14 +36,16 @@ which can be observed inside [Templates](https://github.com/kiarashvosough1999/J
 
 for using phase one, switch to latest tag v2.0.0 to see the implementation. 
 You just need to implement your own **Jython** code in `test1.cl` file and run the main function.
-As a result you see the terminal/console output of the code you implemented in a spicific and general format for each scope defined in code.
+As a result you see the terminal/console output of the code you implemented in a spicific and general format for each scope defined in code
+which can be observed inside [Templates](https://github.com/kiarashvosough1999/JCompiler/tree/master/Samples/outputTemplate).
 
 
 ### Phase 3
 
 for using phase one, switch to latest tag v2.0.0 to see the implementation. 
 You just need to implement your own **Jython** code in `test1.cl` file and run the main function.
-As a result you see the terminal/console output of error detected from your code including redundancy, undefined code, etc.
+As a result you see the terminal/console output of error detected from your code including redundancy, undefined code, etc
+which can be observed inside [Templates](https://github.com/kiarashvosough1999/JCompiler/tree/master/Samples/outputTemplate).
 
 
 ## Contributors
