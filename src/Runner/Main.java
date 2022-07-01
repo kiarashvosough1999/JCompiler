@@ -20,11 +20,9 @@
 
 package Runner;
 
-import ProgramPrinter.ProgramPrinter;
 import SemanticAnalyzer.JythonSemanticAnalyzer;
 import SemanticAnalyzer.Validators.Usage.ClassUsageValidator;
 import gen.JythonLexer;
-import gen.JythonListener;
 import gen.JythonParser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -48,7 +46,5 @@ public class Main {
 
         parseTreeWalker.walk(listener, tree);
 
-        ClassUsageValidator classUsageValidator = new ClassUsageValidator();
-        classUsageValidator.validateClasses(listener.getTopScopes());
     }
 }

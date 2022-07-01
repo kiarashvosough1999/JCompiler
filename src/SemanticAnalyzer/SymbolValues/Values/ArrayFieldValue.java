@@ -67,7 +67,7 @@ public class ArrayFieldValue implements ArraySymbolValue, ErrorProneEntity {
 
     @Override
     public String getType() {
-        return null;
+        return this.type;
     }
 
     @Override

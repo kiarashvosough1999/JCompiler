@@ -1,10 +1,8 @@
 package SemanticAnalyzer.JScope;
 
-import SemanticAnalyzer.SemanticException;
-import SemanticAnalyzer.SymbolExpressions.SymbolExpression;
+import SemanticAnalyzer.Models.PositionModel;
+import SemanticAnalyzer.Exceptions.SemanticException;
 import SemanticAnalyzer.SymbolTable;
-
-import java.util.List;
 import java.util.Stack;
 
 public interface Scope {
@@ -19,11 +17,9 @@ public interface Scope {
 
     void insertScope(Scope scope) throws SemanticException;
 
-    void insertSymbolExpression(SymbolExpression symbolExpression) throws SemanticException;
-
-    List<SymbolExpression> getSymbolExpressions();
-
     Scope getScopeByName(String name) throws SemanticException;
 
     Integer getLineNumber();
+
+    void insertScopeRedundant(ParameteredScope scope, PositionModel positionModel) throws SemanticException;
 }

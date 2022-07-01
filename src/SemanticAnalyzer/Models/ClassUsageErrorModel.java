@@ -19,4 +19,14 @@ public record ClassUsageErrorModel(String name, PositionModel namePosition) {
         stringBuilder.append(Constants.RightBracket);
         return stringBuilder.toString();
     }
+
+    public ValidationResultModel toValidationResultModel() {
+        return new ValidationResultModel(
+                false,
+                null,
+                null,
+                null,
+                toString()
+        );
+    }
 }

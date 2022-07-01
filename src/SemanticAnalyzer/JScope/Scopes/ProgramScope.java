@@ -1,13 +1,11 @@
 package SemanticAnalyzer.JScope.Scopes;
 
+import SemanticAnalyzer.JScope.ParameteredScope;
 import SemanticAnalyzer.JScope.Scope;
 import SemanticAnalyzer.JScope.ScopeType;
-import SemanticAnalyzer.SemanticException;
-import SemanticAnalyzer.SymbolExpressions.SymbolExpression;
+import SemanticAnalyzer.Models.PositionModel;
+import SemanticAnalyzer.Exceptions.SemanticException;
 import SemanticAnalyzer.SymbolTable;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 public class ProgramScope implements Scope {
@@ -20,8 +18,6 @@ public class ProgramScope implements Scope {
 
     private final Stack<Scope> childScopes;
 
-    private final List<SymbolExpression> symbolExpressionList;
-
     private final Integer lineNumber;
 
     public ProgramScope(String scopeName, Integer lineNumber) {
@@ -30,7 +26,6 @@ public class ProgramScope implements Scope {
         this.scopeType = ScopeType.program;
         this.scopeName = scopeName;
         this.childScopes = new Stack<>();
-        this.symbolExpressionList = new ArrayList<>();
     }
 
     @Override
@@ -65,16 +60,6 @@ public class ProgramScope implements Scope {
     }
 
     @Override
-    public void insertSymbolExpression(SymbolExpression symbolExpression) throws SemanticException {
-        symbolExpressionList.add(symbolExpression);
-    }
-
-    @Override
-    public List<SymbolExpression> getSymbolExpressions() {
-        return this.symbolExpressionList;
-    }
-
-    @Override
     public Scope getScopeByName(String name) throws SemanticException {
         for (Scope scope : this.childScopes) {
             if (scope.getScopeName().equals(name)) {
@@ -87,6 +72,13 @@ public class ProgramScope implements Scope {
     @Override
     public Integer getLineNumber() {
         return lineNumber;
+    }
+
+    @Override
+    public void insertScopeRedundant(ParameteredScope scope, PositionModel positionModel) throws SemanticException {
+        String name = scope.getScopeName() + "_" + positionModel.line() + "_" + positionModel.column();
+        scope.setScopeName(name);
+        childScopes.push(scope);
     }
 
     @Override

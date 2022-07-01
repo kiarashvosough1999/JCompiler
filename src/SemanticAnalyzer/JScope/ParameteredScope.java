@@ -12,4 +12,6 @@ public interface ParameteredScope extends Scope {
     public ArrayList<ParameterModel> getParameters();
 
     public String getAsValue();
+
+    void setScopeName(String name);
 }

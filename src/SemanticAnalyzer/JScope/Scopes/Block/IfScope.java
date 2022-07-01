@@ -1,14 +1,12 @@
 package SemanticAnalyzer.JScope.Scopes.Block;
 
+import SemanticAnalyzer.JScope.ParameteredScope;
 import SemanticAnalyzer.JScope.Scope;
 import SemanticAnalyzer.JScope.ScopeType;
-import SemanticAnalyzer.Models.ConditionPack;
-import SemanticAnalyzer.SemanticException;
-import SemanticAnalyzer.SymbolExpressions.SymbolExpression;
+import SemanticAnalyzer.Models.PositionModel;
+import SemanticAnalyzer.Exceptions.SemanticException;
 import SemanticAnalyzer.SymbolTable;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 public class IfScope implements Scope {
@@ -20,30 +18,14 @@ public class IfScope implements Scope {
 
     private final Stack<Scope> childScopes;
 
-    private final List<ConditionPack> conditionPackList;
-
-    private final List<SymbolExpression> symbolExpressionList;
-
     private final Integer lineNumber;
 
-    public IfScope(String scopeName, Integer lineNumber, List<ConditionPack> conditionPackList) {
+    public IfScope(String scopeName, Integer lineNumber) {
         this.lineNumber = lineNumber;
         this.symbolTable = new SymbolTable();
         this.scopeType = ScopeType.block;
         this.scopeName = scopeName;
-        this.conditionPackList = conditionPackList;
         this.childScopes = new Stack<>();
-        this.symbolExpressionList = new ArrayList<>();
-    }
-
-    @Override
-    public void insertSymbolExpression(SymbolExpression symbolExpression) throws SemanticException {
-        symbolExpressionList.add(symbolExpression);
-    }
-
-    @Override
-    public List<SymbolExpression> getSymbolExpressions() {
-        return this.symbolExpressionList;
     }
 
     @Override
@@ -51,6 +33,12 @@ public class IfScope implements Scope {
         return this.symbolTable;
     }
 
+    @Override
+    public void insertScopeRedundant(ParameteredScope scope, PositionModel positionModel) throws SemanticException {
+        String name = scope.getScopeName() + "_" + positionModel.line() + "_" + positionModel.column();
+        scope.setScopeName(name);
+        childScopes.push(scope);
+    }
     @Override
     public ScopeType getScopeType() {
         return this.scopeType;

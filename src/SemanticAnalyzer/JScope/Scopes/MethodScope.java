@@ -1,8 +1,6 @@
 package SemanticAnalyzer.JScope.Scopes;
 
 import Constants.Constants;
-import SemanticAnalyzer.Models.MethodReturnModel;
-import SemanticAnalyzer.SymbolExpressions.SymbolExpression;
 import SemanticAnalyzer.Validators.ErrorProneEntity;
 import SemanticAnalyzer.Models.MethodErrorMeta;
 import SemanticAnalyzer.Helper;
@@ -11,11 +9,9 @@ import SemanticAnalyzer.JScope.Scope;
 import SemanticAnalyzer.JScope.ScopeType;
 import SemanticAnalyzer.Models.ParameterModel;
 import SemanticAnalyzer.Models.PositionModel;
-import SemanticAnalyzer.SemanticException;
+import SemanticAnalyzer.Exceptions.SemanticException;
 import SemanticAnalyzer.SymbolTable;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.Stack;
 
 public class MethodScope implements ParameteredScope, ErrorProneEntity {
@@ -24,17 +20,13 @@ public class MethodScope implements ParameteredScope, ErrorProneEntity {
 
     private final ScopeType scopeType;
 
-    private final String scopeName;
+    private String scopeName;
 
     private final Stack<Scope> childScopes;
 
     private final String returnType;
 
     private final ArrayList<ParameterModel> parameters;
-
-    private final List<SymbolExpression> symbolExpressionList;
-
-    private final Optional<MethodReturnModel> returnModel;
 
     private final Integer lineNumber;
 
@@ -46,46 +38,25 @@ public class MethodScope implements ParameteredScope, ErrorProneEntity {
                        String returnType,
                        Integer lineNumber,
                        PositionModel namePosition,
-                       PositionModel returnTypePosition) {
+                       PositionModel returnTypePosition,
+                       ScopeType scopeType) {
         this.lineNumber = lineNumber;
         this.namePosition = namePosition;
         this.returnTypePosition = returnTypePosition;
         this.symbolTable = new SymbolTable();
         this.returnType = returnType == null ? "void" : returnType;
-        this.scopeType = ScopeType.constructor;
-        this.scopeName = scopeName + Constants.Constructor;
-        this.returnModel = Optional.empty();
+        this.scopeType = scopeType;
+        this.scopeName = scopeType == ScopeType.constructor ? scopeName + Constants.Constructor : scopeName;
         this.childScopes = new Stack<>();
         this.parameters = new ArrayList<>();
-        this.symbolExpressionList = new ArrayList<>();
     }
 
-    public MethodScope(String scopeName,
-                       String returnType,
-                       Integer lineNumber,
-                       PositionModel namePosition,
-                       PositionModel returnTypePosition,
-                       MethodReturnModel returnModel) {
-        this.lineNumber = lineNumber;
-        this.namePosition = namePosition;
-        this.returnTypePosition = returnTypePosition;
-        this.symbolTable = new SymbolTable();
-        this.returnType = returnType == null ? "void" : returnType;
-        this.scopeType = ScopeType.method;
-        this.scopeName = scopeName;
-        this.returnModel = Optional.ofNullable(returnModel);
-        this.childScopes = new Stack<>();
-        this.parameters = new ArrayList<>();
-        this.symbolExpressionList = new ArrayList<>();
+    public PositionModel getNamePosition() {
+        return namePosition;
     }
 
     public String getReturnType() {
         return returnType;
-    }
-
-    @Override
-    public List<SymbolExpression> getSymbolExpressions() {
-        return this.symbolExpressionList;
     }
 
     @Override
@@ -96,11 +67,6 @@ public class MethodScope implements ParameteredScope, ErrorProneEntity {
     @Override
     public ArrayList<ParameterModel> getParameters() {
         return parameters;
-    }
-
-    @Override
-    public void insertSymbolExpression(SymbolExpression symbolExpression) throws SemanticException {
-        symbolExpressionList.add(symbolExpression);
     }
 
     @Override
@@ -156,6 +122,18 @@ public class MethodScope implements ParameteredScope, ErrorProneEntity {
 
         stringBuilder.append(Constants.RightParan);
         return stringBuilder.toString();
+    }
+
+    @Override
+    public void insertScopeRedundant(ParameteredScope scope, PositionModel positionModel) throws SemanticException {
+        String name = scope.getScopeName() + "_" + positionModel.line() + "_" + positionModel.column();
+        scope.setScopeName(name);
+        childScopes.push(scope);
+    }
+
+    @Override
+    public void setScopeName(String name) {
+        this.scopeName = name;
     }
 
     @Override
