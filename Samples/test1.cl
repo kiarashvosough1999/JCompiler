@@ -29,6 +29,9 @@ class Human(Nothing, Nothing2){
             if (true) {
                Nose nose
             }
+            if (true) {
+               Nose nose
+            }
         }
     }
     def void main(){

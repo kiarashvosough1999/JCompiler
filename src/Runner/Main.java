@@ -20,8 +20,8 @@
 
 package Runner;
 
+import ProgramPrinter.ProgramPrinter;
 import SemanticAnalyzer.JythonSemanticAnalyzer;
-import SemanticAnalyzer.Validators.Usage.ClassUsageValidator;
 import gen.JythonLexer;
 import gen.JythonParser;
 import org.antlr.v4.runtime.CharStream;
@@ -42,7 +42,7 @@ public class Main {
         parser.setBuildParseTree(true);
         ParseTree tree = parser.program();
         ParseTreeWalker parseTreeWalker = new ParseTreeWalker();
-        JythonSemanticAnalyzer listener = new JythonSemanticAnalyzer();
+        ProgramPrinter listener = new ProgramPrinter();
 
         parseTreeWalker.walk(listener, tree);
 
