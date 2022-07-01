@@ -1,19 +1,19 @@
-package SemanticAnalyzer.SymbolExpressions.Factories;
+package SemanticAnalyzer.Validators.Usage;
 
 import Constants.Constants;
 import SemanticAnalyzer.JScope.Scope;
 import SemanticAnalyzer.Models.ParameterModel;
 import SemanticAnalyzer.Models.PositionModel;
-import SemanticAnalyzer.Validators.ValidationResultModel;
+import SemanticAnalyzer.Models.ValidationResultModel;
 import gen.JythonParser;
 import java.util.List;
 import java.util.Optional;
 
-public class ArgsFactory {
+public class ArgsUsageDetector {
 
     private final Optional<String> shouldReturnType;
 
-    public ArgsFactory(Optional<String> shouldReturnType) {
+    public ArgsUsageDetector(Optional<String> shouldReturnType) {
         this.shouldReturnType = shouldReturnType;
     }
 
@@ -211,9 +211,9 @@ public class ArgsFactory {
             } else if (expContext.exp().size() >= 1 && expContext.arithmetic_operator() != null) {
                 //
             } else if (expContext.class_instance() != null) {
-                return new ClassInstanceFactory(Optional.of(currentParameter.type())).validateClassInstance(expContext.class_instance(), scopeList);
+                return new ClassInstanceUsageDetector(Optional.of(currentParameter.type())).validateClassInstance(expContext.class_instance(), scopeList);
             } else if (expContext.method_call() != null) {
-                return new MethodCallFactory(Optional.of(currentParameter.type())).generateMethodCall(expContext.method_call(), scopeList);
+                return new MethodCallUsageDetector(Optional.of(currentParameter.type())).generateMethodCall(expContext.method_call(), scopeList);
             } else if (expContext.exp().size() == 1) {
                 //
             }
@@ -234,7 +234,7 @@ public class ArgsFactory {
 
     private String generateErrorForBool(Integer line, Integer column,String symbolText, String methodName, String expectedType) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Error103 : in line ");
+        stringBuilder.append("Error104 : in line ");
         stringBuilder.append(Constants.LeftBracket);
         stringBuilder.append(line);
         stringBuilder.append(Constants.Colon);
@@ -258,7 +258,7 @@ public class ArgsFactory {
     private String generateErrorForTooManyARG(PositionModel methodPosition,
                                               String methodName) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Error103 : in line ");
+        stringBuilder.append("Error105 : in line ");
         stringBuilder.append(Constants.LeftBracket);
         stringBuilder.append(methodPosition.line());
         stringBuilder.append(Constants.Colon);

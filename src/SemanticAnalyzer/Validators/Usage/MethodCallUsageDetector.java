@@ -1,21 +1,19 @@
-package SemanticAnalyzer.SymbolExpressions.Factories;
+package SemanticAnalyzer.Validators.Usage;
 
 import Constants.Constants;
 import SemanticAnalyzer.JScope.Scope;
 import SemanticAnalyzer.JScope.ScopeType;
 import SemanticAnalyzer.JScope.Scopes.MethodScope;
-import SemanticAnalyzer.SymbolExpressions.Fix.MethodCallExpression;
-import SemanticAnalyzer.Validators.ValidationResultModel;
+import SemanticAnalyzer.Models.ValidationResultModel;
 import gen.JythonParser;
-
 import java.util.List;
 import java.util.Optional;
 
-public class MethodCallFactory {
+public class MethodCallUsageDetector {
 
     private final Optional<String> shouldReturnType;
 
-    public MethodCallFactory(Optional<String> shouldReturnType) {
+    public MethodCallUsageDetector(Optional<String> shouldReturnType) {
         this.shouldReturnType = shouldReturnType;
     }
 
@@ -28,7 +26,7 @@ public class MethodCallFactory {
                         MethodScope methodScope = (MethodScope) childScope;
                         if (shouldReturnType.isPresent()) {
                             if (shouldReturnType.get().equals(methodScope.getReturnType())){
-                                return new ArgsFactory(Optional.of(methodScope.getReturnType())).generateArgsList(
+                                return new ArgsUsageDetector(Optional.of(methodScope.getReturnType())).generateArgsList(
                                         context.args(),
                                         scopeList,
                                         methodScope.getParameters(),
@@ -48,7 +46,7 @@ public class MethodCallFactory {
                                 );
                             }
                         } else {
-                            return new ArgsFactory(Optional.of(methodScope.getReturnType())).generateArgsList(
+                            return new ArgsUsageDetector(Optional.of(methodScope.getReturnType())).generateArgsList(
                                     context.args(),
                                     scopeList,
                                     methodScope.getParameters(),
@@ -71,7 +69,7 @@ public class MethodCallFactory {
 
     private String generateErrorMessageForInvalidReturnType(JythonParser.Method_callContext context, String methodScopeReturnType) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Error103 : in line ");
+        stringBuilder.append("Error108 : in line ");
         stringBuilder.append(Constants.LeftBracket);
         stringBuilder.append(context.methodName.getLine());
         stringBuilder.append(Constants.Colon);
@@ -90,7 +88,7 @@ public class MethodCallFactory {
 
     private String generateErrorMessageForNotFoundMethod(JythonParser.Method_callContext context) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Error103 : in line ");
+        stringBuilder.append("Error109 : in line ");
         stringBuilder.append(Constants.LeftBracket);
         stringBuilder.append(context.methodName.getLine());
         stringBuilder.append(Constants.Colon);

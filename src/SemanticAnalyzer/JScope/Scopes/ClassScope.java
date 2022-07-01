@@ -2,17 +2,13 @@ package SemanticAnalyzer.JScope.Scopes;
 
 import SemanticAnalyzer.Models.ClassErrorMeta;
 import SemanticAnalyzer.Models.ParentClassModel;
-import SemanticAnalyzer.SymbolExpressions.SymbolExpression;
 import SemanticAnalyzer.Validators.ErrorProneEntity;
-import SemanticAnalyzer.Models.ErrorProneEntityMeta;
 import SemanticAnalyzer.JScope.ParameteredScope;
 import SemanticAnalyzer.JScope.Scope;
 import SemanticAnalyzer.JScope.ScopeType;
 import SemanticAnalyzer.Models.PositionModel;
-import SemanticAnalyzer.SemanticException;
+import SemanticAnalyzer.Exceptions.SemanticException;
 import SemanticAnalyzer.SymbolTable;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
@@ -28,8 +24,6 @@ public class ClassScope implements Scope, ErrorProneEntity {
 
     private final Stack<Scope> childScopes;
 
-    private final List<SymbolExpression> symbolExpressionList;
-
     private final Integer lineNumber;
 
     private final PositionModel namePosition;
@@ -43,27 +37,18 @@ public class ClassScope implements Scope, ErrorProneEntity {
         this.scopeType = ScopeType.classs;
         this.scopeName = scopeName;
         this.childScopes = new Stack<>();
-        this.symbolExpressionList = new ArrayList<>();
     }
 
     public List<ParentClassModel> getClassParents() {
         return classParents;
     }
 
-    @Override
-    public List<SymbolExpression> getSymbolExpressionList() {
-        return symbolExpressionList;
-    }
 
     @Override
     public SymbolTable getSymbolTable() {
         return this.symbolTable;
     }
 
-    @Override
-    public List<SymbolExpression> getSymbolExpressions() {
-        return this.symbolExpressionList;
-    }
 
     @Override
     public ScopeType getScopeType() {
@@ -92,11 +77,6 @@ public class ClassScope implements Scope, ErrorProneEntity {
     }
 
     @Override
-    public void insertSymbolExpression(SymbolExpression symbolExpression) throws SemanticException {
-        symbolExpressionList.add(symbolExpression);
-    }
-
-    @Override
     public Scope getScopeByName(String name) throws SemanticException {
         for (Scope scope : this.childScopes) {
             if (scope.getScopeName().equals(name)) {
@@ -104,6 +84,13 @@ public class ClassScope implements Scope, ErrorProneEntity {
             }
         }
         throw new SemanticException("Can not find scope with name" + name);
+    }
+
+    @Override
+    public void insertScopeRedundant(ParameteredScope scope, PositionModel positionModel) throws SemanticException {
+        String name = scope.getScopeName() + "_" + positionModel.line() + "_" + positionModel.column();
+        scope.setScopeName(name);
+        childScopes.push(scope);
     }
 
     @Override

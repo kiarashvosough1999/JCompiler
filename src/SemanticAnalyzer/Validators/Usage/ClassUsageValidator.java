@@ -3,19 +3,27 @@ package SemanticAnalyzer.Validators.Usage;
 import SemanticAnalyzer.Helper;
 import SemanticAnalyzer.JScope.Scope;
 import SemanticAnalyzer.JScope.ScopeType;
-import SemanticAnalyzer.Models.ClassErrorMeta;
-import SemanticAnalyzer.Models.ClassUsageErrorModel;
-import SemanticAnalyzer.Models.FieldErrorMeta;
-import SemanticAnalyzer.Models.MethodErrorMeta;
+import SemanticAnalyzer.Models.*;
 import SemanticAnalyzer.SymbolValues.SymbolValueKind;
 import SemanticAnalyzer.Validators.ErrorProneEntity;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class ClassUsageValidator {
 
-    public ClassUsageValidator() {
+    public ClassUsageValidator() {}
+
+    public List<ValidationResultModel> validateClasses(List<Scope> scopes) {
+
+        return this.depthFirstClassCheck(
+                scopes,
+                this.extractClasses(scopes)
+        )
+                .stream()
+                .map(ClassUsageErrorModel::toValidationResultModel)
+                .toList();
     }
 
     private List<String> extractClasses(List<Scope> scopes) {
@@ -43,15 +51,7 @@ public class ClassUsageValidator {
         return availableClasses;
     }
 
-    public void validateClasses(List<Scope> scopes) {
-
-        List<String> availableClasses = this.extractClasses(scopes);
-        for (ClassUsageErrorModel errorModel: this.depthFirstClassCheck(scopes, availableClasses)) {
-            System.out.println(errorModel.toString());
-        }
-    }
-
-    public List<ClassUsageErrorModel> depthFirstClassCheck(List<Scope> scopeList, List<String> availableClasses) {
+    private List<ClassUsageErrorModel> depthFirstClassCheck(List<Scope> scopeList, List<String> availableClasses) {
 
         if (scopeList.isEmpty()) { return new ArrayList(); }
         List<ClassUsageErrorModel> classUsageErrorModelList = new ArrayList<>();

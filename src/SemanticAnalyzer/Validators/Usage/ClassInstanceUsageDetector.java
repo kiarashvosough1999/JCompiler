@@ -1,18 +1,19 @@
-package SemanticAnalyzer.SymbolExpressions.Factories;
+package SemanticAnalyzer.Validators.Usage;
 
+import Constants.Constants;
 import SemanticAnalyzer.JScope.Scope;
 import SemanticAnalyzer.JScope.ScopeType;
 import SemanticAnalyzer.JScope.Scopes.MethodScope;
-import SemanticAnalyzer.Validators.ValidationResultModel;
+import SemanticAnalyzer.Models.ValidationResultModel;
 import gen.JythonParser;
 import java.util.List;
 import java.util.Optional;
 
-public class ClassInstanceFactory {
+public final class ClassInstanceUsageDetector {
 
     private final Optional<String> shouldReturnType;
 
-    public ClassInstanceFactory(Optional<String> shouldReturnType) {
+    public ClassInstanceUsageDetector(Optional<String> shouldReturnType) {
         this.shouldReturnType = shouldReturnType;
     }
 
@@ -25,7 +26,7 @@ public class ClassInstanceFactory {
                 for (Scope childScope: scope.getAllChildScopes()) {
                     if (childScope.getScopeType() == ScopeType.constructor) {
                         MethodScope constructor = (MethodScope)childScope;
-                        return new ArgsFactory(shouldReturnType).generateArgsList(
+                        return new ArgsUsageDetector(shouldReturnType).generateArgsList(
                                 context.args(),
                                 scopeList,
                                 constructor.getParameters(),
@@ -37,11 +38,28 @@ public class ClassInstanceFactory {
             }
         }
         return new ValidationResultModel(
-                true,
+                false,
                 null,
                 null,
                 null,
-                ""
+                this.generateErrorForTooManyARG(context)
         );
+    }
+
+    private String generateErrorForTooManyARG(JythonParser.Class_instanceContext context) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Error106 : in line ");
+        stringBuilder.append(Constants.LeftBracket);
+        stringBuilder.append(context.start.getLine());
+        stringBuilder.append(Constants.Colon);
+        stringBuilder.append(context.start.getCharPositionInLine());
+        stringBuilder.append(Constants.RightBracket);
+        stringBuilder.append(" , class  ");
+        stringBuilder.append(Constants.LeftBracket);
+        stringBuilder.append(context.className.getText());
+        stringBuilder.append(Constants.RightBracket);
+        stringBuilder.append(" was not found");
+        stringBuilder.append("\n");
+        return stringBuilder.toString();
     }
 }

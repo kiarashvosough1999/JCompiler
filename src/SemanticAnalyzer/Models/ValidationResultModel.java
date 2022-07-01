@@ -1,7 +1,10 @@
-package SemanticAnalyzer.Validators;
+package SemanticAnalyzer.Models;
+
+import SemanticAnalyzer.Validators.ErrorProneEntity;
+import SemanticAnalyzer.Validators.ValidationTypes;
 
 public record ValidationResultModel(
-        boolean isValid,
+        Boolean isValid,
         ValidationTypes validationTypes,
         ErrorProneEntity errorEntity,
         ErrorProneEntity conflictedErrorEntity,

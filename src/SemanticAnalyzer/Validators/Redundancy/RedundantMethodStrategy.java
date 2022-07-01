@@ -9,10 +9,9 @@ import SemanticAnalyzer.JScope.ScopeType;
 import SemanticAnalyzer.JScope.Scopes.MethodScope;
 import SemanticAnalyzer.Models.ParameterModel;
 import SemanticAnalyzer.Validators.ErrorProneEntity;
-import SemanticAnalyzer.Validators.ValidationResultModel;
+import SemanticAnalyzer.Models.ValidationResultModel;
 import SemanticAnalyzer.Validators.ValidationStrategy;
 import SemanticAnalyzer.Validators.ValidationTypes;
-
 import java.util.List;
 
 public class RedundantMethodStrategy implements ValidationStrategy {
@@ -21,6 +20,33 @@ public class RedundantMethodStrategy implements ValidationStrategy {
 
     public RedundantMethodStrategy(List<Scope> scopes, MethodScope methodScope) {
         this.scopes = scopes;
+    }
+
+    @Override
+    public ValidationResultModel checkValidity(ErrorProneEntity errorProneEntity) throws Exception {
+        for (Scope scope: this.scopes) {
+            // find class scope which contains methods
+            if (scope.getScopeType() == ScopeType.classs) {
+                // check all children for methods
+                for (Scope childScope: scope.getAllChildScopes()) {
+                    if (childScope.getScopeType() == ScopeType.method) {
+                        // detect
+                        ValidationResultModel validationResultModel = this.detectIdenticality(
+                                childScope,
+                                errorProneEntity
+                        );
+                        if (validationResultModel != null) return validationResultModel;
+                    }
+                }
+            }
+        }
+        return new ValidationResultModel(
+                true,
+                null,
+                null,
+                null,
+                null
+        );
     }
 
     private String generateErrorMessage(MethodErrorMeta selectedMethodMeta, MethodScope methodScope) {
@@ -78,33 +104,12 @@ public class RedundantMethodStrategy implements ValidationStrategy {
                 );
             }
         }
-        return null;
-    }
-
-    @Override
-    public ValidationResultModel checkValidity(ErrorProneEntity errorProneEntity) throws Exception {
-        for (Scope scope: this.scopes) {
-            // find class scope which contains methods
-            if (scope.getScopeType() == ScopeType.classs) {
-                // check all children for methods
-                for (Scope childScope: scope.getAllChildScopes()) {
-                    if (childScope.getScopeType() == ScopeType.method) {
-                        // detect
-                        ValidationResultModel validationResultModel = this.detectIdenticality(
-                                childScope,
-                                errorProneEntity
-                        );
-                        if (validationResultModel != null) return validationResultModel;
-                    }
-                }
-            }
-        }
         return new ValidationResultModel(
                 true,
                 null,
                 null,
                 null,
-                null
+                ""
         );
     }
 }

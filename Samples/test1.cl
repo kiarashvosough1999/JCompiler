@@ -3,7 +3,7 @@ import Nothing2
 
 class Human(Nothing, Nothing2){
     Nose nose
-    Hand[2] hands
+    Hand[92] hands
     Leg[2] legs
     int calories
     bool isHungry
@@ -22,7 +22,7 @@ class Human(Nothing, Nothing2){
         calories += c
         newFood = food
         bool isHungry
-        while(true){
+        while(food){
             Food newFood = Food()
             eat(newFood)
             isHungry = checkIsHungry()

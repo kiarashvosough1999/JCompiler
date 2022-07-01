@@ -40,8 +40,6 @@ parameter : varDec (',' varDec)* ;
 
 statement : varDec | assignment | print_statment | method_call | return_statment |if_statment | while_statment | if_else_statment | for_statment;
 
-// usages
-
 return_statment : 'return' exp ;
 
 condition_list : condition ((operator = ('or'|'and')) condition)* ;
@@ -60,14 +58,13 @@ class_instance : className = (TYPE | CLASSNAME) args ; // done
 
 for_statment : 'for' (forIndex = ID) 'in' (forBound = ID) '{' statement* '}' | 'for' (forRangeIndex = ID) 'in' 'range' '('INTEGER (',' INTEGER)? (',' INTEGER)? ')' '{' statement* '}' ;
 
-// use parser to extract each rule as expression
-method_call : (methodName = ID) ('.')? args ; // done
+method_call : (methodName = ID) ('.')? args ;
 
 assignment : prefixexp assignment_operators exp | varDec assignment_operators exp | arrayDec '=' class_instance ('[' (arraySize = INTEGER) ']') ;
 
-exp : 'none' | BOOLVALUES | INTEGER | STRINGVALUE | FLOAT | prefixexp | exp arithmetic_operator exp | class_instance | '('exp')' | method_call ; // half done
+exp : 'none' | BOOLVALUES | INTEGER | STRINGVALUE | FLOAT | prefixexp | exp arithmetic_operator exp | class_instance | '('exp')' | method_call ;
 
-prefixexp : id = ID | prefixexp '[' (arrayCount = INTEGER) ']' | prefixexp '.' (nextId = ID) | prefixexp '.' (methodNAme = ID) args ;
+prefixexp : id = ID | prefixexp '[' (arrayCount = INTEGER) ']' | prefixexp '.' (nextId = ID) | prefixexp '.' method_call ;
 
 args : '(' (explist)? ')' ;
 

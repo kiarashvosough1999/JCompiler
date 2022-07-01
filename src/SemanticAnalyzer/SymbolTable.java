@@ -1,6 +1,7 @@
 package SemanticAnalyzer;
 
 import Constants.Constants;
+import SemanticAnalyzer.Models.PositionModel;
 import SemanticAnalyzer.SymbolValues.SymbolValue;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +21,11 @@ public class SymbolTable {
 
     public void insert(SymbolValue value) {
         this.table.put(value.getName(), value);
+    }
+
+    public void insertRedundant(SymbolValue value, PositionModel positionModel) {
+        String name = value.getName() + "_" + positionModel.line() + "_" + positionModel.column();
+        this.table.put(name, value);
     }
 
     public SymbolValue getSymbolValueFor(String key) {

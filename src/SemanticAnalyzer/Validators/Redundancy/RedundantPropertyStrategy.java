@@ -6,7 +6,7 @@ import SemanticAnalyzer.Models.FieldErrorMeta;
 import SemanticAnalyzer.SymbolValues.ArraySymbolValue;
 import SemanticAnalyzer.SymbolValues.SymbolValue;
 import SemanticAnalyzer.Validators.ErrorProneEntity;
-import SemanticAnalyzer.Validators.ValidationResultModel;
+import SemanticAnalyzer.Models.ValidationResultModel;
 import SemanticAnalyzer.Validators.ValidationStrategy;
 import SemanticAnalyzer.Validators.ValidationTypes;
 
