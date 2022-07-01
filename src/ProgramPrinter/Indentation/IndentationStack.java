@@ -66,29 +66,24 @@ public class IndentationStack {
     }
 
     public void push(IndentationType type) throws IndentationStackException {
-        if (this.indentablesStack.size() > 0 && this.indentablesStack.peek().getIndentationType() == type) {
-            throw new IndentationStackException(type);
-        }
-        else {
-            switch (type) {
-                case program -> this.indentablesStack.push(new ProgramIndentation());
+        switch (type) {
+            case program -> this.indentablesStack.push(new ProgramIndentation());
 
-                case importt -> this.indentablesStack.push(new ImportIndentation());
+            case importt -> this.indentablesStack.push(new ImportIndentation());
 
-                case classs -> this.indentablesStack.push(new ClassIndentation());
+            case classs -> this.indentablesStack.push(new ClassIndentation());
 
-                case variable -> this.indentablesStack.push(new VariableIndentation());
+            case variable -> this.indentablesStack.push(new VariableIndentation());
 
-                case array -> this.indentablesStack.push(new ArrayIndentation());
+            case array -> this.indentablesStack.push(new ArrayIndentation());
 
-                case concstructor -> this.indentablesStack.push(new ConcstructorIndentation());
+            case concstructor -> this.indentablesStack.push(new ConcstructorIndentation());
 
-                case parameters -> this.indentablesStack.push(new ParametersIndentation());
+            case parameters -> this.indentablesStack.push(new ParametersIndentation());
 
-                case method -> this.indentablesStack.push(new MethodIndentation());
+            case method -> this.indentablesStack.push(new MethodIndentation());
 
-                case statement -> this.indentablesStack.push(new StatementIndentation());
-            }
+            case statement -> this.indentablesStack.push(new StatementIndentation());
         }
     }
 }

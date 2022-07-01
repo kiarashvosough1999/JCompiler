@@ -260,17 +260,22 @@ public class ProgramPrinter implements JythonListener {
      */
     @Override
     public void exitMethodDec(JythonParser.MethodDecContext ctx) {
-//        System.out.println(this.indentationStack.getNestedCounter());
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(this.indentationStack.getIndentation());
 
         if (this.indentationStack.getNestedCounter() > 1) {
-            stringBuilder.append("    ");
-            stringBuilder.append("nested statement { }");
-            System.out.println(stringBuilder);
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(this.indentationStack.getIndentation());
+            for (int i = 0; i< this.indentationStack.getNestedCounter(); i++){
+                stringBuilder.append("    ");
+                stringBuilder.append("nested statement { }");
+                System.out.println(stringBuilder);
+                stringBuilder = new StringBuilder();
+                stringBuilder.append(this.indentationStack.getIndentation());
+            }
             System.out.println(this.indentationStack.getIndentation() + "}");
             this.indentationStack.setNestedToZero();
         } else {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(this.indentationStack.getIndentation());
             stringBuilder.append("}");
             System.out.println(stringBuilder);
         }
