@@ -1,5 +1,8 @@
 # JCompiler
 
+[![Twitter](https://img.shields.io/badge/Twitter-@Vosough_k-blue.svg?style=flat-square)](https://twitter.com/vosough_k)
+[![Linkedin](https://img.shields.io/badge/Linkedin-KiarashVosough-blue.svg?style=flat-square)](https://www.linkedin.com/in/kiarashvosough/)
+
 This is the project assigned to me on Compiler Design course in Ferdowsi University Of Mashhad.
 
 - [Features](#features)
@@ -45,7 +48,7 @@ which can be observed inside [Templates Phase 2](https://github.com/kiarashvosou
 for using phase three, switch to latest tag of v3.0.0 or higher to see the implementation. 
 You just need to implement your own **Jython** code in `test1.cl` file and run the main function.
 As a result you see the terminal/console output of error detected from your code including redundancy, undefined code, etc
-which can be observed inside [Templates](https://github.com/kiarashvosough1999/JCompiler/tree/master/Samples/outputTemplate/phase%203).
+which can be observed inside [Templates Phase 3](https://github.com/kiarashvosough1999/JCompiler/tree/master/Samples/outputTemplate/phase%203).
 
 
 ## Contributors
